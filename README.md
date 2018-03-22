@@ -1,17 +1,7 @@
 # SharpFNT
 
 ## Introduction
-SharpFNT is a pure C# parser for the Angel Code Bitmap Font file. SharpFNT is built for .Net Standard 1.3 and .Net Framework 1.1 making it highly portable.
-
-## Usage
-``` csharp
-using SharpFNT;
-
-BitmapFont bitmapFont = BitmapFont.FromFile("Example.fnt"); 
-```
-
-## Binaries
-The simplest way to obtain SharpFNT is through [Nuget](https://www.nuget.org). Binaries are also available under releases.
+SharpFNT is a C# library for reading Angel Code bitmap fonts. This is still a work in progress. Support for the XML and text formats are a work in progess. This will be available on Nuget later.
 
 ## Possible Future Additions
 1. An optional library for creating the character rectangles for rendering and measuring.
