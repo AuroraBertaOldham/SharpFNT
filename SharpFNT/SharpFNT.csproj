@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Authors>Todd Berta-Oldham</Authors>
+    <Company>Todd Berta-Oldham</Company>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Description>A pure C# library for reading Angel Code Bitmap FNT files.</Description>
+  </PropertyGroup>
+
+</Project>
