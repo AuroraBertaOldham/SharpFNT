@@ -8,6 +8,6 @@ namespace SharpFNT
 {
     public enum FormatHint
     {
-        Binary
+        Binary, XML, Text
     }
 }

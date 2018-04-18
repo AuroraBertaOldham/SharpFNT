@@ -7,12 +7,14 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace SharpFNT
 {
     public sealed class BitmapFont
     {
-        public const int Version = 3;
+        private const int Version = 3;
 
         private const byte MagicOne = 66;
         private const byte MagicTwo = 77;
@@ -43,6 +45,27 @@ namespace SharpFNT
 
                         break;
                     }
+
+                    case FormatHint.XML:
+                    {
+                        using (XmlWriter xmlWriter = XmlWriter.Create(fileStream))
+                        {
+                            this.WriteXML(xmlWriter);
+                        }
+
+                        break;
+                    }
+
+                    case FormatHint.Text:
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        {
+                            this.WriteText(streamWriter);
+                        }
+
+                        break;
+                    }
+
                     default:
                         throw new ArgumentOutOfRangeException(nameof(formatHint), formatHint, null);
                 }
@@ -85,6 +108,56 @@ namespace SharpFNT
                 binaryWriter.Write((byte)BlockID.KerningPairs);
                 this.KerningCollection.WriteBinary(binaryWriter);
             }
+        }
+
+        public void WriteXML(XmlWriter xmlWriter) 
+        {
+            XDocument document = new XDocument();
+
+            XElement infoElement = new XElement("info");
+            this.Info.WriteXML(infoElement);
+            document.Add(infoElement);
+
+            XElement commonElement = new XElement("common");
+            this.Common.WriteXML(commonElement, this.Pages.Count);
+            document.Add(commonElement);
+
+            XElement pagesElement = new XElement("pages");
+            this.Pages.WriteXML(pagesElement);
+            document.Add(pagesElement);
+
+            XElement charactersElement = new XElement("chars");
+            this.Characters.WriteXML(charactersElement);
+            document.Add(charactersElement);
+
+            if (this.KerningCollection != null && this.KerningCollection.Count > 0)
+            {
+                XElement kerningsElement = new XElement("kernings");
+                this.KerningCollection.WriteXML(kerningsElement);
+                document.Add(kerningsElement);
+            }
+
+            document.WriteTo(xmlWriter);
+        }
+
+        public void WriteText(TextWriter textWriter) 
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.Append("info");
+            this.Info.WriteText(stringBuilder);
+
+            stringBuilder.AppendLine("common");
+            this.Common.WriteText(stringBuilder, this.Pages.Count);
+            this.Pages.WriteText(stringBuilder);
+
+            stringBuilder.AppendLine("chars");
+            this.Characters.WriteText(stringBuilder);
+
+            stringBuilder.AppendLine("kernings");
+            this.KerningCollection.WriteText(stringBuilder);
+
+            textWriter.Write(stringBuilder.ToString());
         }
 
         public static BitmapFont ReadBinary(BinaryReader binaryReader)
@@ -136,6 +209,64 @@ namespace SharpFNT
             return bitmapFont;
         }
 
+        public static BitmapFont ReadXML(TextReader textReader) 
+        {
+            BitmapFont bitmapFont = new BitmapFont();
+
+            XDocument document = XDocument.Load(textReader);
+
+            XElement infoElement = document.Element("info");
+            bitmapFont.Info = BitmapFontInfo.ReadXML(infoElement);
+
+            XElement commonElement = document.Element("common");
+            bitmapFont.Common = BitmapFontCommon.ReadXML(commonElement, out int pages);
+
+            XElement pagesElement = document.Element("pages");
+            bitmapFont.Pages = PageCollection.ReadXML(pagesElement, pages);
+
+            XElement charactersElement = document.Element("chars");
+            bitmapFont.Characters = CharacterCollection.ReadXML(charactersElement);
+
+            XElement kerningElement = document.Element("kernings");
+            if (kerningElement != null)
+            {
+                bitmapFont.KerningCollection = KerningCollection.ReadXML(kerningElement);
+            }
+
+            return bitmapFont;
+        }
+
+        public static BitmapFont ReadText(TextReader textReader) 
+        {
+            BitmapFont bitmapFont = new BitmapFont();
+
+            string[] lineSegments = textReader.ReadLine().Split();
+
+            switch (lineSegments[0])
+            {
+                case "info":
+                    bitmapFont.Info = BitmapFontInfo.ReadText(lineSegments);
+                break;
+                
+                case "common":
+                    bitmapFont.Common = BitmapFontCommon.ReadText(lineSegments, out int pageCount);
+                    bitmapFont.Pages = PageCollection.ReadText(textReader, pageCount);
+                break;
+
+                case "chars":
+                    bitmapFont.Characters = CharacterCollection.ReadText(lineSegments, textReader);
+                break;
+
+                case "kernings":
+                    bitmapFont.KerningCollection = KerningCollection.ReadText(lineSegments, textReader);
+                break;                
+            }
+
+            return bitmapFont;
+        }
+
+        //TODO Auto read format. Check for binary numbers, then for <, then use text.
+
         public static BitmapFont FromStream(Stream stream, FormatHint formatHint, bool leaveOpen)
         {
             switch (formatHint)
@@ -145,6 +276,22 @@ namespace SharpFNT
                     using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen))
                     {
                         return ReadBinary(binaryReader);
+                    }
+                }
+
+                case FormatHint.XML:
+                {
+                    using (StreamReader streamReader = new StreamReader(stream))
+                    {
+                        return ReadXML(streamReader);
+                    }
+                }
+
+                case FormatHint.Text:
+                {
+                    using (StreamReader streamReader = new StreamReader(stream))
+                    {
+                        return ReadText(streamReader);
                     }
                 }
 

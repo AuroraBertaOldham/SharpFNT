@@ -7,10 +7,11 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Xml.Linq;
 
 namespace SharpFNT
 {
-    internal static class Utility
+    internal static class UtilityExtensions
     {
         public static bool IsBitSet(this byte @byte, int index)
         {
@@ -60,6 +61,11 @@ namespace SharpFNT
             {
                 binaryWriter.Write(@string);
             }
+        }
+
+        public static T GetEnumValue<T>(this XAttribute xAttribute) 
+        {
+            return (T)Enum.Parse(typeof(T), xAttribute.Value);
         }
     }
 }

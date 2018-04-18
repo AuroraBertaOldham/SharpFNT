@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml.Linq;
 
 namespace SharpFNT
 {
@@ -16,6 +18,8 @@ namespace SharpFNT
         public int Count => _list.Count;
 
         bool ICollection<string>.IsReadOnly => false;
+
+        //TODO Consider switching to dictionary to properly handle IDs.
 
         private readonly List<string> _list;
 
@@ -32,6 +36,30 @@ namespace SharpFNT
             foreach (string page in _list)
             {
                 binaryWriter.Write(page, true);
+            }
+        }
+
+        public void WriteXML(XElement element) 
+        {
+            foreach (string page in _list)
+            {
+                XElement pageElement = new XElement("page");
+                //TODO ID
+                pageElement.SetAttributeValue("id", 0);
+                pageElement.SetAttributeValue("file", page);
+                element.Add(page);
+            }
+        }
+
+
+        public void WriteText(StringBuilder stringBuilder)
+        {
+            foreach (string page in _list)
+            {
+                stringBuilder.AppendLine();
+                //TODO ID
+                TextFormatUtility.WriteInt("id", 0, stringBuilder);
+                TextFormatUtility.WriteString("file", page, stringBuilder);
             }
         }
 
@@ -79,6 +107,27 @@ namespace SharpFNT
             {
                 pageCollection.Add(binaryReader.ReadCString());
             }
+
+            return pageCollection;
+        }
+
+        public static PageCollection ReadXML(XElement element, int pageCount)
+        {
+            PageCollection pageCollection = new PageCollection(pageCount);
+
+            foreach (XElement pageElement in element.Elements("page"))
+            {
+                pageCollection.Add((string)pageElement.Attribute("file"));
+            } 
+
+            return pageCollection;
+        }
+
+        public static PageCollection ReadText(TextReader textReader, int pageCount)
+        {
+            PageCollection pageCollection = new PageCollection(pageCount);
+
+
 
             return pageCollection;
         }

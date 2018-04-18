@@ -7,6 +7,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
 
 namespace SharpFNT
 {
@@ -31,6 +34,27 @@ namespace SharpFNT
             foreach (Character character in _dictionary.Values)
             {
                 character.WriteBinary(binaryWriter);
+            }
+        }
+
+        public void WriteXML(XElement element) 
+        {
+            foreach (Character character in _dictionary.Values)
+            {
+                XElement characterElement = new XElement("char");
+                character.WriteXML(characterElement);
+                element.Add(characterElement);
+            }
+        }
+
+        public void WriteText(StringBuilder stringBuilder) 
+        {
+            TextFormatUtility.WriteInt("count", this.Count, stringBuilder);
+
+            foreach (Character character in _dictionary.Values)
+            {
+                stringBuilder.AppendLine("char");
+                character.WriteText(stringBuilder);
             }
         }
 
@@ -100,6 +124,38 @@ namespace SharpFNT
             for (int i = 0; i < characterCount; i++)
             {
                 Character character = Character.ReadBinary(binaryReader);
+                characterCollection.Set(character);
+            }
+
+            return characterCollection;
+        }
+
+        public static CharacterCollection ReadXML(XElement element) 
+        {
+            IEnumerable<XElement> charElements = element.Elements("char");
+            int characterCount = charElements.Count();
+
+            CharacterCollection characterCollection = new CharacterCollection(characterCount);
+
+            foreach (XElement charElement in charElements)
+            {
+                Character character = Character.ReadXML(charElement);
+                characterCollection.Set(character);
+            }
+
+            return characterCollection;
+        }
+
+        public static CharacterCollection ReadText(string[] lineSegments, TextReader textReader) 
+        {
+            int count = TextFormatUtility.ReadInt("count", lineSegments);
+
+            CharacterCollection characterCollection = new CharacterCollection(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                string[] characterLineSegments = textReader.ReadLine().Split();
+                Character character = Character.ReadText(characterLineSegments);
                 characterCollection.Set(character);
             }
 

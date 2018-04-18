@@ -5,6 +5,8 @@
 // ****************************************************************************
 
 using System.IO;
+using System.Text;
+using System.Xml.Linq;
 
 namespace SharpFNT
 {
@@ -20,6 +22,7 @@ namespace SharpFNT
         public bool Bold { get; set; }
         public bool FixedHeight { get; set; }
 
+        //TODO Charset maybe written as a name not an int.
         public int Charset { get; set; }
         public int StretchHeight { get; set; }
         public int SuperSamplingLevel { get; set; }
@@ -33,11 +36,11 @@ namespace SharpFNT
         public int SpacingVertical { get; set; }
 
         public int Outline { get; set; }
-        public string FontName { get; set; }
+        public string Face { get; set; }
 
         public void WriteBinary(BinaryWriter binaryWriter)
         {
-            binaryWriter.Write(MinSizeInBytes + this.FontName.Length + 1);
+            binaryWriter.Write(MinSizeInBytes + this.Face.Length + 1);
             binaryWriter.Write((short)this.Size);
 
             byte bitField = 0;
@@ -63,7 +66,52 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.SpacingVertical);
 
             binaryWriter.Write((byte)this.Outline);
-            binaryWriter.Write(this.FontName, true);
+            binaryWriter.Write(this.Face, true);
+        }
+
+        public void WriteXML(XElement element) 
+        {
+            element.SetAttributeValue("face", this.Face);
+            element.SetAttributeValue("size", this.Size); 
+            element.SetAttributeValue("bold", this.Bold);
+            element.SetAttributeValue("italic", this.Italic);
+
+            //TODO Charset
+
+            element.SetAttributeValue("unicode", this.Unicode);
+            element.SetAttributeValue("stretchH", this.StretchHeight);
+            element.SetAttributeValue("smooth", this.Smooth);
+            element.SetAttributeValue("aa", this.SuperSamplingLevel);
+
+            string padding = string.Format("{0}, {1}, {2}, {3}", this.PaddingUp, this.PaddingRight, this.PaddingDown, this.PaddingLeft);
+            element.SetAttributeValue("padding", padding);
+            
+            string spacing = string.Format("{0}, {1}", this.SpacingHorizontal, this.SpacingVertical);
+            element.SetAttributeValue("spacing", spacing);
+
+            element.SetAttributeValue("outline", this.Outline);
+        }
+
+        public void WriteText(StringBuilder stringBuilder) 
+        {
+            TextFormatUtility.WriteString("face", this.Face, stringBuilder);
+            TextFormatUtility.WriteInt("size", this.Size, stringBuilder);
+            TextFormatUtility.WriteBool("bold", this.Bold, stringBuilder);
+            TextFormatUtility.WriteBool("italic", this.Italic, stringBuilder);
+
+            //TODO Charset
+
+            TextFormatUtility.WriteBool("unicode", this.Unicode, stringBuilder);
+            TextFormatUtility.WriteInt("stretchH", this.StretchHeight, stringBuilder);
+            TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, stringBuilder);
+
+            string padding = string.Format("{0}, {1}, {2}, {3}", this.PaddingUp, this.PaddingRight, this.PaddingDown, this.PaddingLeft);
+            TextFormatUtility.WriteValue("padding", padding, stringBuilder);
+            
+            string spacing = string.Format("{0}, {1}", this.SpacingHorizontal, this.SpacingVertical);
+            TextFormatUtility.WriteValue("spacing", spacing, stringBuilder);
+
+            TextFormatUtility.WriteInt("outline", this.Outline, stringBuilder);
         }
 
         public static BitmapFontInfo ReadBinary(BinaryReader binaryReader)
@@ -98,7 +146,70 @@ namespace SharpFNT
             bitmapFontInfo.SpacingVertical = binaryReader.ReadByte();
 
             bitmapFontInfo.Outline = binaryReader.ReadByte();
-            bitmapFontInfo.FontName = binaryReader.ReadCString();
+            bitmapFontInfo.Face = binaryReader.ReadCString();
+
+            return bitmapFontInfo;
+        }
+
+        public static BitmapFontInfo ReadXML(XElement element)
+        {
+            BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
+
+            bitmapFontInfo.Face = (string)element.Attribute("face");
+            bitmapFontInfo.Size = (int)element.Attribute("size");
+            bitmapFontInfo.Bold = (bool)element.Attribute("bold");
+            bitmapFontInfo.Italic = (bool)element.Attribute("italic");
+
+            //TODO Charset
+
+            bitmapFontInfo.Unicode = (bool)element.Attribute("unicode");
+            bitmapFontInfo.StretchHeight = (int)element.Attribute("stretchH");
+            bitmapFontInfo.Smooth = (bool)element.Attribute("smooth");
+            bitmapFontInfo.SuperSamplingLevel = (int)element.Attribute("aa");
+            
+            string[] padding = ((string)element.Attribute("padding")).Split(',');
+            bitmapFontInfo.PaddingUp = int.Parse(padding[0]);
+            bitmapFontInfo.PaddingRight = int.Parse(padding[1]);
+            bitmapFontInfo.PaddingDown = int.Parse(padding[2]);
+            bitmapFontInfo.PaddingLeft = int.Parse(padding[3]);
+
+            string[] spacing = ((string)element.Attribute("spacing")).Split(',');
+            bitmapFontInfo.SpacingHorizontal = int.Parse(spacing[0]);
+            bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
+
+            bitmapFontInfo.Outline = (int)element.Attribute("outline");
+
+            return bitmapFontInfo;
+        }
+
+        public static BitmapFontInfo ReadText(string[] lineSegments) 
+        {
+            BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
+
+            bitmapFontInfo.Face = TextFormatUtility.ReadString("face", lineSegments);
+            bitmapFontInfo.Size = TextFormatUtility.ReadInt("size", lineSegments);
+            bitmapFontInfo.Bold = TextFormatUtility.ReadBool("bold", lineSegments);
+            bitmapFontInfo.Italic = TextFormatUtility.ReadBool("italic", lineSegments);
+
+            //TODO Charset
+
+            bitmapFontInfo.Unicode = TextFormatUtility.ReadBool("unicode", lineSegments);
+            bitmapFontInfo.StretchHeight = TextFormatUtility.ReadInt("stretchH", lineSegments);
+            bitmapFontInfo.Smooth = TextFormatUtility.ReadBool("smooth", lineSegments);
+            bitmapFontInfo.SuperSamplingLevel = TextFormatUtility.ReadInt("aa", lineSegments);
+
+            string[] padding = TextFormatUtility.ReadValue("padding", lineSegments).Split(',');
+            bitmapFontInfo.PaddingUp = int.Parse(padding[0]);
+            bitmapFontInfo.PaddingRight = int.Parse(padding[1]);
+            bitmapFontInfo.PaddingDown = int.Parse(padding[2]);
+            bitmapFontInfo.PaddingLeft = int.Parse(padding[3]);
+
+            string[] spacing = TextFormatUtility.ReadValue("spacing", lineSegments).Split(',');
+            bitmapFontInfo.SpacingHorizontal = int.Parse(spacing[0]);
+            bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
+            bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
+
+            bitmapFontInfo.Outline = TextFormatUtility.ReadInt("outline", lineSegments);
 
             return bitmapFontInfo;
         }

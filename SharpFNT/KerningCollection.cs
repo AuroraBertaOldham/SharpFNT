@@ -7,6 +7,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+using System.Linq;
+using System;
+using System.Text;
 
 namespace SharpFNT
 {
@@ -30,6 +35,25 @@ namespace SharpFNT
             foreach (KerningPair kerningPair in _dictionary.Keys)
             {
                 kerningPair.WriteBinary(binaryWriter);
+            }
+        }
+
+        public void WriteXML(XElement element) 
+        {
+            foreach (KerningPair kerningPair in _dictionary.Keys)
+            {
+                XElement kerningElement = new XElement("kerning");
+                kerningPair.WriteXML(kerningElement);
+                element.Add(kerningElement);
+            }
+        }
+
+        public void WriteText(StringBuilder stringBuilder)
+        {
+            foreach (KerningPair kerningPair in _dictionary.Keys)
+            {
+                stringBuilder.AppendLine("kerning");
+                kerningPair.WriteText(stringBuilder);
             }
         }
 
@@ -108,6 +132,38 @@ namespace SharpFNT
             for (int i = 0; i < kerningCount; i++)
             {
                 KerningPair kerningPair = KerningPair.ReadBinary(binaryReader);
+                kerningCollection.SetAmount(kerningPair);
+            }
+
+            return kerningCollection;
+        }
+
+        public static KerningCollection ReadXML(XElement element) 
+        {            
+            IEnumerable<XElement> kerningElements = element.Elements("kerning");
+            int kerningCount = kerningElements.Count();
+
+            KerningCollection kerningCollection = new KerningCollection(kerningCount);
+
+            foreach (XElement kerningElement in kerningElements)
+            {
+                KerningPair kerningPair = KerningPair.ReadXML(kerningElement);
+                kerningCollection.SetAmount(kerningPair);
+            }
+
+            return kerningCollection;
+        }
+
+        public static KerningCollection ReadText(string[] lineSegments, TextReader textReader) 
+        {
+            int count = TextFormatUtility.ReadInt("count", lineSegments);
+
+            KerningCollection kerningCollection = new KerningCollection(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                string[] kerningLineSegments = textReader.ReadLine().Split();
+                KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments);
                 kerningCollection.SetAmount(kerningPair);
             }
 
