@@ -4,6 +4,7 @@
 // This code is licensed under MIT.
 // ****************************************************************************
 
+using System;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -52,10 +53,8 @@ namespace SharpFNT
 
             binaryWriter.Write(bitField);
 
-            //TODO Charset
-
-            byte charsetID = 0;
-            binaryWriter.Write(charsetID);
+            CharacterSet characterSet = (CharacterSet)Enum.Parse(typeof(CharacterSet), this.Charset, true);
+            binaryWriter.Write((byte)characterSet);
 
             binaryWriter.Write((ushort)this.StretchHeight);
             binaryWriter.Write((byte)this.SuperSamplingLevel);
@@ -136,10 +135,8 @@ namespace SharpFNT
             bitmapFontInfo.Bold = bitField.IsBitSet(3);
             bitmapFontInfo.FixedHeight = bitField.IsBitSet(4);
 
-            //TODO Charset
-
-            byte charsetID = binaryReader.ReadByte();
-            //bitmapFontInfo.Charset = charsetID;
+            CharacterSet characterSet = (CharacterSet)binaryReader.ReadByte();
+            bitmapFontInfo.Charset = characterSet.ToString().ToUpper();
 
             bitmapFontInfo.StretchHeight = binaryReader.ReadUInt16();
             bitmapFontInfo.SuperSamplingLevel = binaryReader.ReadByte();
