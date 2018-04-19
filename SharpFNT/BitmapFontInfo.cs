@@ -22,8 +22,7 @@ namespace SharpFNT
         public bool Bold { get; set; }
         public bool FixedHeight { get; set; }
 
-        //TODO Charset maybe written as a name not an int.
-        public int Charset { get; set; }
+        public string Charset { get; set; }
         public int StretchHeight { get; set; }
         public int SuperSamplingLevel { get; set; }
 
@@ -53,7 +52,11 @@ namespace SharpFNT
 
             binaryWriter.Write(bitField);
 
-            binaryWriter.Write((byte)this.Charset);
+            //TODO Charset
+
+            byte charsetID = 0;
+            binaryWriter.Write(charsetID);
+
             binaryWriter.Write((ushort)this.StretchHeight);
             binaryWriter.Write((byte)this.SuperSamplingLevel);
 
@@ -76,17 +79,17 @@ namespace SharpFNT
             element.SetAttributeValue("bold", this.Bold);
             element.SetAttributeValue("italic", this.Italic);
 
-            //TODO Charset
+            element.SetAttributeValue("charset", this.Charset);
 
             element.SetAttributeValue("unicode", this.Unicode);
             element.SetAttributeValue("stretchH", this.StretchHeight);
             element.SetAttributeValue("smooth", this.Smooth);
             element.SetAttributeValue("aa", this.SuperSamplingLevel);
 
-            string padding = string.Format("{0}, {1}, {2}, {3}", this.PaddingUp, this.PaddingRight, this.PaddingDown, this.PaddingLeft);
+            string padding = $"{this.PaddingUp}, {this.PaddingRight}, {this.PaddingDown}, {this.PaddingLeft}";
             element.SetAttributeValue("padding", padding);
-            
-            string spacing = string.Format("{0}, {1}", this.SpacingHorizontal, this.SpacingVertical);
+
+            string spacing = $"{this.SpacingHorizontal}, {this.SpacingVertical}";
             element.SetAttributeValue("spacing", spacing);
 
             element.SetAttributeValue("outline", this.Outline);
@@ -99,16 +102,16 @@ namespace SharpFNT
             TextFormatUtility.WriteBool("bold", this.Bold, stringBuilder);
             TextFormatUtility.WriteBool("italic", this.Italic, stringBuilder);
 
-            //TODO Charset
+            TextFormatUtility.WriteString("charset", this.Charset, stringBuilder);
 
             TextFormatUtility.WriteBool("unicode", this.Unicode, stringBuilder);
             TextFormatUtility.WriteInt("stretchH", this.StretchHeight, stringBuilder);
             TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, stringBuilder);
 
-            string padding = string.Format("{0}, {1}, {2}, {3}", this.PaddingUp, this.PaddingRight, this.PaddingDown, this.PaddingLeft);
+            string padding = $"{this.PaddingUp}, {this.PaddingRight}, {this.PaddingDown}, {this.PaddingLeft}";
             TextFormatUtility.WriteValue("padding", padding, stringBuilder);
-            
-            string spacing = string.Format("{0}, {1}", this.SpacingHorizontal, this.SpacingVertical);
+
+            string spacing = $"{this.SpacingHorizontal}, {this.SpacingVertical}";
             TextFormatUtility.WriteValue("spacing", spacing, stringBuilder);
 
             TextFormatUtility.WriteInt("outline", this.Outline, stringBuilder);
@@ -133,7 +136,11 @@ namespace SharpFNT
             bitmapFontInfo.Bold = bitField.IsBitSet(3);
             bitmapFontInfo.FixedHeight = bitField.IsBitSet(4);
 
-            bitmapFontInfo.Charset = binaryReader.ReadByte();
+            //TODO Charset
+
+            byte charsetID = binaryReader.ReadByte();
+            //bitmapFontInfo.Charset = charsetID;
+
             bitmapFontInfo.StretchHeight = binaryReader.ReadUInt16();
             bitmapFontInfo.SuperSamplingLevel = binaryReader.ReadByte();
 
@@ -160,7 +167,7 @@ namespace SharpFNT
             bitmapFontInfo.Bold = (bool)element.Attribute("bold");
             bitmapFontInfo.Italic = (bool)element.Attribute("italic");
 
-            //TODO Charset
+            bitmapFontInfo.Charset = (string)element.Attribute("charset");
 
             bitmapFontInfo.Unicode = (bool)element.Attribute("unicode");
             bitmapFontInfo.StretchHeight = (int)element.Attribute("stretchH");
@@ -191,7 +198,7 @@ namespace SharpFNT
             bitmapFontInfo.Bold = TextFormatUtility.ReadBool("bold", lineSegments);
             bitmapFontInfo.Italic = TextFormatUtility.ReadBool("italic", lineSegments);
 
-            //TODO Charset
+            bitmapFontInfo.Charset = TextFormatUtility.ReadString("charset", lineSegments);
 
             bitmapFontInfo.Unicode = TextFormatUtility.ReadBool("unicode", lineSegments);
             bitmapFontInfo.StretchHeight = TextFormatUtility.ReadInt("stretchH", lineSegments);

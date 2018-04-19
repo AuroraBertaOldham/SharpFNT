@@ -7,79 +7,75 @@
 using System;
 using System.Text;
 
-internal static class TextFormatUtility
+namespace SharpFNT
 {
-    public static string ReadValue(string propertyName, string[] segments) 
+    internal static class TextFormatUtility
     {
-        for (int i = 1; i < segments.Length; i++)
+        public static string ReadValue(string propertyName, string[] segments) 
         {
-            string segment = segments[i];
-            int firstEqualsSign = segment.IndexOf('=');
-            if (string.Compare(segment, 0, propertyName, 0, firstEqualsSign) == 0)
+            for (int i = 1; i < segments.Length; i++)
             {
-                return segment.Remove(0, firstEqualsSign + 1);   
+                string segment = segments[i];
+                int firstEqualsSign = segment.IndexOf('=');
+                if (string.Compare(segment, 0, propertyName, 0, firstEqualsSign) == 0)
+                {
+                    return segment.Remove(0, firstEqualsSign + 1);   
+                }
             }
+
+            throw new ArgumentException();
         }
-
-        throw new ArgumentException();
-    }
-
-    public static bool ReadBool(string propertyName, string[] segments) 
-    {
-        string value = ReadValue(propertyName, segments);
-
-        if (value == "1") 
+        public static bool ReadBool(string propertyName, string[] segments) 
         {
-            return true;
+            string value = ReadValue(propertyName, segments);
+
+            if (value == "1") 
+            {
+                return true;
+            }
+
+            if (value == "0") 
+            {
+                return false;
+            }
+
+            throw new FormatException();
         }
-        else if (value == "0") 
+        public static int ReadInt(string propertyName, string[] segments) 
         {
-            return false;
+            string value = ReadValue(propertyName, segments);
+            return int.Parse(value);
+        }
+        public static string ReadString(string propertyName, string[] segments) 
+        {
+            string value = ReadValue(propertyName, segments);
+            return value.Substring(1, value.Length - 2);
+        }
+        public static T ReadEnum<T>(string propertyName, string[] segments) 
+        {
+            int value = ReadInt(propertyName, segments);
+            return (T)Enum.ToObject(typeof(T), value);
         }
 
-        throw new FormatException();
+        public static void WriteValue(string propertyName, string value, StringBuilder stringBuilder)
+        {
+            stringBuilder.AppendFormat(" {0}={1}", propertyName, value);
+        }
+        public static void WriteString(string propertyName, string value, StringBuilder stringBuilder) 
+        {
+            stringBuilder.AppendFormat(" {0}=\"{1}\"", propertyName, value);
+        }
+        public static void WriteInt(string propertyName, int value, StringBuilder stringBuilder) 
+        {
+            WriteValue(propertyName, value.ToString(), stringBuilder);
+        }
+        public static void WriteBool(string propertyName, bool value, StringBuilder stringBuilder) 
+        {
+            WriteValue(propertyName, value ? "1" : "0", stringBuilder);
+        }
+        public static void WriteEnum<T>(string propertyName, T value, StringBuilder stringBuilder)
+        {
+            WriteInt(propertyName, Convert.ToInt32(value), stringBuilder);
+        }
     }
-
-    public static int ReadInt(string propertyName, string[] segments) 
-    {
-        string value = ReadValue(propertyName, segments);
-        return int.Parse(value);
-    }
-
-    public static string ReadString(string propertyName, string[] segments) 
-    {
-        string value = ReadValue(propertyName, segments);
-        return value.Substring(1, value.Length - 2);
-    }
-
-    public static T ReadEnum<T>(string propertyName, string[] segments) 
-    {
-        string value = ReadValue(propertyName, segments);
-        return (T)Enum.Parse(typeof(T), value);
-    }
-
-    public static void WriteString(string propertyName, string value, StringBuilder stringBuilder) 
-    {
-        stringBuilder.AppendFormat(" {0}=\"{1}\"", propertyName, value);
-    }
-
-    public static void WriteInt(string propertyName, int value, StringBuilder stringBuilder) 
-    {
-        stringBuilder.AppendFormat(" {0}={1}", propertyName, value);
-    }
-
-    public static void WriteValue(string propertyName, string value, StringBuilder stringBuilder) 
-    {
-        stringBuilder.AppendFormat(" {0}={1}", propertyName, value);
-    }
-
-    public static void WriteBool(string propertyName, bool value, StringBuilder stringBuilder) 
-    {
-        WriteValue(propertyName, value ? "1" : "0", stringBuilder);
-    }
-
-    // public static void WriteEnum<T>(string propertyName, T value, StringBuilder stringBuilder) 
-    // {
-        
-    // }
 }

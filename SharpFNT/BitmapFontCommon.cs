@@ -42,7 +42,6 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.GreenChannel);
             binaryWriter.Write((byte)this.BlueChannel);
         }
-
         public void WriteXML(XElement element, int pages) 
         {
             element.SetAttributeValue("lineHeight", this.LineHeight);
@@ -54,12 +53,11 @@ namespace SharpFNT
 
             element.SetAttributeValue("packed", this.Packed);
 
-            element.SetAttributeValue("alphaChnl", this.AlphaChannel);
-            element.SetAttributeValue("redChnl", this.RedChannel);
-            element.SetAttributeValue("greenChnl", this.GreenChannel);
-            element.SetAttributeValue("blueChnl", this.BlueChannel);
+            element.SetAttributeValue("alphaChnl", (int)this.AlphaChannel);
+            element.SetAttributeValue("redChnl", (int)this.RedChannel);
+            element.SetAttributeValue("greenChnl", (int)this.GreenChannel);
+            element.SetAttributeValue("blueChnl", (int)this.BlueChannel);
         }
-
         public void WriteText(StringBuilder stringBuilder, int pages)
         {
             TextFormatUtility.WriteInt("lineHeight", this.LineHeight, stringBuilder);
@@ -71,10 +69,10 @@ namespace SharpFNT
 
             TextFormatUtility.WriteBool("packed", this.Packed, stringBuilder);
 
-            TextFormatUtility.WriteValue("alphaChnl", this.AlphaChannel.ToString(), stringBuilder);
-            TextFormatUtility.WriteValue("redChnl", this.RedChannel.ToString(), stringBuilder);
-            TextFormatUtility.WriteValue("greenChnl", this.GreenChannel.ToString(), stringBuilder);
-            TextFormatUtility.WriteValue("blueChnl", this.BlueChannel.ToString(), stringBuilder);
+            TextFormatUtility.WriteEnum("alphaChnl", this.AlphaChannel, stringBuilder);
+            TextFormatUtility.WriteEnum("redChnl", this.RedChannel, stringBuilder);
+            TextFormatUtility.WriteEnum("greenChnl", this.GreenChannel, stringBuilder);
+            TextFormatUtility.WriteEnum("blueChnl", this.BlueChannel, stringBuilder);
         }
 
         public static BitmapFontCommon ReadBinary(BinaryReader binaryReader, out int pageCount)
@@ -101,7 +99,6 @@ namespace SharpFNT
 
             return binary;
         }
-
         public static BitmapFontCommon ReadXML(XElement element, out int pages) 
         {
             BitmapFontCommon bitmapFontCommon = new BitmapFontCommon();
@@ -122,7 +119,6 @@ namespace SharpFNT
 
             return bitmapFontCommon;
         }
-
         public static BitmapFontCommon ReadText(string[] lineSegments, out int pages) 
         {
             BitmapFontCommon bitmapFontCommon = new BitmapFontCommon();
