@@ -605,14 +605,14 @@ namespace SharpFNT
 
         public static BitmapFont FromFile(string path, FormatHint formatHint)
         {
-            using (FileStream fileStream = File.Create(path))
+            using (FileStream fileStream = File.OpenRead(path))
             {
                 return FromStream(fileStream, formatHint, true);
             }
         }
         public static BitmapFont FromFile(string path)
         {
-            using (FileStream fileStream = File.Create(path))
+            using (FileStream fileStream = File.OpenRead(path))
             {
                 return FromStream(fileStream, true);
             }
