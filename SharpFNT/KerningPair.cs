@@ -5,6 +5,7 @@
 // ****************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -91,7 +92,7 @@ namespace SharpFNT
 
             return new KerningPair(left, right, amount); 
         }
-        public static KerningPair ReadText(string[] lineSegments)
+        public static KerningPair ReadText(IReadOnlyList<string> lineSegments)
         {
             int left = TextFormatUtility.ReadInt("first", lineSegments);
             int right = TextFormatUtility.ReadInt("second", lineSegments);

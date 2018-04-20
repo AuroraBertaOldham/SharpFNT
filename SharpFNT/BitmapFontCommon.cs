@@ -4,6 +4,7 @@
 // This code is licensed under MIT.
 // ****************************************************************************
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -119,7 +120,7 @@ namespace SharpFNT
 
             return bitmapFontCommon;
         }
-        public static BitmapFontCommon ReadText(string[] lineSegments, out int pages) 
+        public static BitmapFontCommon ReadText(IReadOnlyList<string> lineSegments, out int pages) 
         {
             BitmapFontCommon bitmapFontCommon = new BitmapFontCommon();
 

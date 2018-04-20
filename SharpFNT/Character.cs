@@ -4,6 +4,7 @@
 // This code is licensed under MIT.
 // ****************************************************************************
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -97,7 +98,7 @@ namespace SharpFNT
                 Channel = element.Attribute("chnl").GetEnumValue<Channel>()
             };
         }
-        public static Character ReadText(string[] lineSegments) 
+        public static Character ReadText(IReadOnlyList<string> lineSegments) 
         {
             return new Character
             {

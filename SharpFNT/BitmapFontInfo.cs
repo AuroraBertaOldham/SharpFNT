@@ -5,6 +5,7 @@
 // ****************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -21,7 +22,6 @@ namespace SharpFNT
         public bool Unicode { get; set; }
         public bool Italic { get; set; }
         public bool Bold { get; set; }
-        public bool FixedHeight { get; set; }
 
         public string Charset { get; set; }
         public int StretchHeight { get; set; }
@@ -49,7 +49,6 @@ namespace SharpFNT
             bitField = bitField.SetBit(1, this.Unicode);
             bitField = bitField.SetBit(2, this.Italic);
             bitField = bitField.SetBit(3, this.Bold);
-            bitField = bitField.SetBit(4, this.FixedHeight);
 
             binaryWriter.Write(bitField);
 
@@ -131,7 +130,6 @@ namespace SharpFNT
             bitmapFontInfo.Unicode = bitField.IsBitSet(1);
             bitmapFontInfo.Italic = bitField.IsBitSet(2);
             bitmapFontInfo.Bold = bitField.IsBitSet(3);
-            bitmapFontInfo.FixedHeight = bitField.IsBitSet(4);
 
             CharacterSet characterSet = (CharacterSet)binaryReader.ReadByte();
             bitmapFontInfo.Charset = characterSet.ToString().ToUpper();
@@ -182,7 +180,7 @@ namespace SharpFNT
 
             return bitmapFontInfo;
         }
-        public static BitmapFontInfo ReadText(string[] lineSegments) 
+        public static BitmapFontInfo ReadText(IReadOnlyList<string> lineSegments) 
         {
             BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
 

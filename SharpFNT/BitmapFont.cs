@@ -301,20 +301,17 @@ namespace SharpFNT
             return null;
         }
 
-        public static BitmapFont ReadBinary(BinaryReader binaryReader, bool skipMagic = false)
+        public static BitmapFont ReadBinary(BinaryReader binaryReader)
         {
             BitmapFont bitmapFont = new BitmapFont();
 
-            if (!skipMagic)
-            {
-                byte magicOne = binaryReader.ReadByte();
-                byte magicTwo = binaryReader.ReadByte();
-                byte magicThree = binaryReader.ReadByte();
+            byte magicOne = binaryReader.ReadByte();
+            byte magicTwo = binaryReader.ReadByte();
+            byte magicThree = binaryReader.ReadByte();
 
-                if (magicOne != MagicOne || magicTwo != MagicTwo || magicThree != MagicThree)
-                {
-                    throw new InvalidDataException("File is not an FNT bitmap font or it is not in the binary format.");
-                }
+            if (magicOne != MagicOne || magicTwo != MagicTwo || magicThree != MagicThree)
+            {
+                throw new InvalidDataException("File is not an FNT bitmap font or it is not in the binary format.");
             }
 
             if (binaryReader.ReadByte() != ImplementedVersion)
@@ -348,7 +345,7 @@ namespace SharpFNT
 
                         for (int i = 0; i < pageCount; i++)
                         {
-                            bitmapFont.Pages.Add(i, binaryReader.ReadCString());
+                            bitmapFont.Pages[i] = binaryReader.ReadCString();
                         }
 
                         break;
@@ -369,7 +366,7 @@ namespace SharpFNT
                         for (int i = 0; i < characterCount; i++)
                         {
                             Character character = Character.ReadBinary(binaryReader);
-                            bitmapFont.Characters.Add(character.ID, character);
+                            bitmapFont.Characters[character.ID] = character;
                         }
 
                         break;
@@ -390,7 +387,7 @@ namespace SharpFNT
                         for (int i = 0; i < kerningCount; i++)
                         {
                             KerningPair kerningPair = KerningPair.ReadBinary(binaryReader);
-                            bitmapFont.KerningPairs.Add(kerningPair, kerningPair.Amount);
+                            bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                         }
 
                         break;
@@ -410,9 +407,16 @@ namespace SharpFNT
 
             XDocument document = XDocument.Load(textReader);
 
+            XElement fontElement = document.Element("font");
+
+            if (fontElement == null)
+            {
+                throw new InvalidDataException("Missing root font element in XML file.");
+            }
+
             // Info
 
-            XElement infoElement = document.Element("info");
+            XElement infoElement = fontElement.Element("info");
             if (infoElement != null)
             {
                 bitmapFont.Info = BitmapFontInfo.ReadXML(infoElement);
@@ -422,7 +426,7 @@ namespace SharpFNT
 
             int pages = 32;
 
-            XElement commonElement = document.Element("common");
+            XElement commonElement = fontElement.Element("common");
             if (commonElement != null)
             {
                 bitmapFont.Common = BitmapFontCommon.ReadXML(commonElement, out pages);
@@ -430,7 +434,7 @@ namespace SharpFNT
 
             // Pages
 
-            XElement pagesElement = document.Element("pages");
+            XElement pagesElement = fontElement.Element("pages");
             if (pagesElement != null)
             {
                 bitmapFont.Pages = new Dictionary<int, string>(pages);
@@ -439,13 +443,13 @@ namespace SharpFNT
                 {
                     int id = (int)pageElement.Attribute("id");
                     string name = (string)pageElement.Attribute("file");
-                    bitmapFont.Pages.Add(id, name);
+                    bitmapFont.Pages[id] = name;
                 }
             }
 
             // Characters
 
-            XElement charactersElement = document.Element("chars");
+            XElement charactersElement = fontElement.Element("chars");
             if (charactersElement != null)
             {
                 int count = (int)charactersElement.Attribute("count");
@@ -455,13 +459,13 @@ namespace SharpFNT
                 foreach (XElement characterElement in charactersElement.Elements("char"))
                 {
                     Character character = Character.ReadXML(characterElement);
-                    bitmapFont.Characters.Add(character.ID, character);
+                    bitmapFont.Characters[character.ID] = character;
                 }
             }
 
             // Kernings
              
-            XElement kerningsElement = document.Element("kernings");
+            XElement kerningsElement = fontElement.Element("kernings");
             if (kerningsElement != null)
             {
                 int count = (int)kerningsElement.Attribute("count");
@@ -471,7 +475,7 @@ namespace SharpFNT
                 foreach (XElement kerningElement in kerningsElement.Elements("kerning"))
                 {
                     KerningPair kerningPair = KerningPair.ReadXML(kerningElement);
-                    bitmapFont.KerningPairs.Add(kerningPair, kerningPair.Amount);
+                    bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                 }
             }
 
@@ -483,7 +487,7 @@ namespace SharpFNT
 
             while (textReader.Peek() != -1)
             {
-                string[] lineSegments = textReader.ReadLine().Split();
+                IReadOnlyList<string> lineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
 
                 switch (lineSegments[0])
                 {
@@ -505,7 +509,7 @@ namespace SharpFNT
                         bitmapFont.Pages = bitmapFont.Pages ?? new Dictionary<int, string>(32);
                         int id = TextFormatUtility.ReadInt("id", lineSegments);
                         string file = TextFormatUtility.ReadString("file", lineSegments);
-                        bitmapFont.Pages.Add(id, file);
+                        bitmapFont.Pages[id] = file;
                         break;
                     }
 
@@ -517,9 +521,9 @@ namespace SharpFNT
 
                         for (int i = 0; i < count; i++)
                         {
-                            string[] characterLineSegments = textReader.ReadLine().Split();
+                            IReadOnlyList<string> characterLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
                             Character character = Character.ReadText(characterLineSegments);
-                            bitmapFont.Characters.Add(character.ID, character);
+                            bitmapFont.Characters[character.ID] = character;
                         }
 
                         break;
@@ -533,9 +537,9 @@ namespace SharpFNT
 
                         for (int i = 0; i < count; i++)
                         {
-                            string[] kerningLineSegments = textReader.ReadLine().Split();
+                            IReadOnlyList<string> kerningLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
                             KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments);
-                            bitmapFont.KerningPairs.Add(kerningPair, kerningPair.Amount);
+                            bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                         }
 
                         break;
@@ -582,13 +586,9 @@ namespace SharpFNT
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
             {
-                byte magicOne = binaryReader.ReadByte();
-                byte magicTwo = binaryReader.ReadByte();
-                byte magicThree = binaryReader.ReadByte();
-
-                if (magicOne == MagicOne && magicTwo == MagicTwo && magicThree == MagicThree)
+                if (binaryReader.PeekChar() == MagicOne)
                 {
-                    BitmapFont bitmapFont = ReadBinary(binaryReader, true);
+                    BitmapFont bitmapFont = ReadBinary(binaryReader);
                     if (!leaveOpen)
                     {
                         stream.Dispose();
