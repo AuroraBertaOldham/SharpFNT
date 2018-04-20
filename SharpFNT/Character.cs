@@ -14,7 +14,7 @@ namespace SharpFNT
     {
         public const int SizeInBytes = 20;
 
-        public char Char { get; set; }
+        public int ID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int Width { get; set; }
@@ -27,21 +27,20 @@ namespace SharpFNT
 
         public void WriteBinary(BinaryWriter binaryWriter) 
         {
-            binaryWriter.Write((uint) this.Char);
-            binaryWriter.Write((ushort) this.X);
-            binaryWriter.Write((ushort) this.Y);
-            binaryWriter.Write((ushort) this.Width);
-            binaryWriter.Write((ushort) this.Height);
-            binaryWriter.Write((short) this.XOffset);
-            binaryWriter.Write((short) this.YOffset);
-            binaryWriter.Write((short) this.XAdvance);
-            binaryWriter.Write((byte) this.Page);
-            binaryWriter.Write((byte) this.Channel);
+            binaryWriter.Write((uint)this.ID);
+            binaryWriter.Write((ushort)this.X);
+            binaryWriter.Write((ushort)this.Y);
+            binaryWriter.Write((ushort)this.Width);
+            binaryWriter.Write((ushort)this.Height);
+            binaryWriter.Write((short)this.XOffset);
+            binaryWriter.Write((short)this.YOffset);
+            binaryWriter.Write((short)this.XAdvance);
+            binaryWriter.Write((byte)this.Page);
+            binaryWriter.Write((byte)this.Channel);
         }
-
         public void WriteXML(XElement element) 
         {
-            element.SetAttributeValue("id", (int) this.Char);
+            element.SetAttributeValue("id", this.ID);
             element.SetAttributeValue("x", this.X);
             element.SetAttributeValue("y", this.Y);
             element.SetAttributeValue("width", this.Width);
@@ -52,10 +51,9 @@ namespace SharpFNT
             element.SetAttributeValue("page", this.Page);
             element.SetAttributeValue("chnl", this.Channel);
         }
-
         public void WriteText(StringBuilder stringBuilder)
         {
-            TextFormatUtility.WriteInt("id", (int) this.Char, stringBuilder);
+            TextFormatUtility.WriteInt("id", this.ID, stringBuilder);
             TextFormatUtility.WriteInt("x", this.X, stringBuilder);
             TextFormatUtility.WriteInt("y", this.Y, stringBuilder);
             TextFormatUtility.WriteInt("width", this.Width, stringBuilder);
@@ -71,7 +69,7 @@ namespace SharpFNT
         {
             return new Character
             {
-                Char = (char)binaryReader.ReadUInt32(),
+                ID = (int)binaryReader.ReadUInt32(),
                 X = binaryReader.ReadUInt16(),
                 Y = binaryReader.ReadUInt16(),
                 Width = binaryReader.ReadUInt16(),
@@ -80,44 +78,40 @@ namespace SharpFNT
                 YOffset = binaryReader.ReadInt16(),
                 XAdvance = binaryReader.ReadInt16(),
                 Page = binaryReader.ReadByte(),
-                Channel = (Channel)binaryReader.ReadByte()
+                Channel = (Channel) binaryReader.ReadByte()
             };
         }
-
         public static Character ReadXML(XElement element)
         {
-            Character character = new Character();
-
-            character.Char = (char)(int)element.Attribute("id");
-            character.X = (int)element.Attribute("x");
-            character.Y = (int)element.Attribute("y");
-            character.Width = (int)element.Attribute("width");
-            character.Height = (int)element.Attribute("height");
-            character.XOffset = (int)element.Attribute("xoffset");
-            character.YOffset = (int)element.Attribute("yoffset");
-            character.XAdvance = (int)element.Attribute("xadvance");
-            character.Page = (int)element.Attribute("page");
-            character.Channel = element.Attribute("chnl").GetEnumValue<Channel>();
-
-            return character;
+            return new Character
+            {
+                ID = (int)element.Attribute("id"),
+                X = (int)element.Attribute("x"),
+                Y = (int)element.Attribute("y"),
+                Width = (int)element.Attribute("width"),
+                Height = (int)element.Attribute("height"),
+                XOffset = (int)element.Attribute("xoffset"),
+                YOffset = (int)element.Attribute("yoffset"),
+                XAdvance = (int)element.Attribute("xadvance"),
+                Page = (int)element.Attribute("page"),
+                Channel = element.Attribute("chnl").GetEnumValue<Channel>()
+            };
         }
-
         public static Character ReadText(string[] lineSegments) 
         {
-            Character character = new Character();
-
-            character.Char = (char)TextFormatUtility.ReadInt("id", lineSegments);
-            character.X = TextFormatUtility.ReadInt("x", lineSegments);
-            character.Y = TextFormatUtility.ReadInt("y", lineSegments);
-            character.Width = TextFormatUtility.ReadInt("width", lineSegments);
-            character.Height = TextFormatUtility.ReadInt("height", lineSegments);
-            character.XOffset = TextFormatUtility.ReadInt("xoffset", lineSegments);
-            character.YOffset = TextFormatUtility.ReadInt("yoffset", lineSegments);
-            character.XAdvance = TextFormatUtility.ReadInt("xadvance", lineSegments);
-            character.Page = TextFormatUtility.ReadInt("page", lineSegments);
-            character.Channel = TextFormatUtility.ReadEnum<Channel>("chnl", lineSegments);
-
-            return character;
+            return new Character
+            {
+                ID = TextFormatUtility.ReadInt("id", lineSegments),
+                X = TextFormatUtility.ReadInt("x", lineSegments),
+                Y = TextFormatUtility.ReadInt("y", lineSegments),
+                Width = TextFormatUtility.ReadInt("width", lineSegments),
+                Height = TextFormatUtility.ReadInt("height", lineSegments),
+                XOffset = TextFormatUtility.ReadInt("xoffset", lineSegments),
+                YOffset = TextFormatUtility.ReadInt("yoffset", lineSegments),
+                XAdvance = TextFormatUtility.ReadInt("xadvance", lineSegments),
+                Page = TextFormatUtility.ReadInt("page", lineSegments),
+                Channel = TextFormatUtility.ReadEnum<Channel>("chnl", lineSegments)
+            };
         }
     }
 }

@@ -15,11 +15,11 @@ namespace SharpFNT
     {
         public const int SizeInBytes = 10;
 
-        public char Left { get; }
-        public char Right { get; }
+        public int Left { get; }
+        public int Right { get; }
         public int Amount { get; }
 
-        public KerningPair(char left, char right, int amount)
+        public KerningPair(int left, int right, int amount)
         {
             this.Left = left;
             this.Right = right;
@@ -35,15 +35,15 @@ namespace SharpFNT
 
         public void WriteXML(XElement element) 
         {
-            element.SetAttributeValue("first", (int) this.Left);
-            element.SetAttributeValue("second", (int) this.Right);
+            element.SetAttributeValue("first", this.Left);
+            element.SetAttributeValue("second", this.Right);
             element.SetAttributeValue("amount", this.Amount);
         }
 
         public void WriteText(StringBuilder stringBuilder)
         {
-            TextFormatUtility.WriteInt("first", (int) this.Left, stringBuilder);
-            TextFormatUtility.WriteInt("right", (int) this.Right, stringBuilder);
+            TextFormatUtility.WriteInt("first", this.Left, stringBuilder);
+            TextFormatUtility.WriteInt("right", this.Right, stringBuilder);
             TextFormatUtility.WriteInt("amount", this.Amount, stringBuilder);
         }
 
@@ -80,16 +80,16 @@ namespace SharpFNT
 
         public static KerningPair ReadBinary(BinaryReader binaryReader)
         {
-            uint left = binaryReader.ReadUInt32();
-            uint right = binaryReader.ReadUInt32();
+            int left = (int)binaryReader.ReadUInt32();
+            int right = (int)binaryReader.ReadUInt32();
             short amount = binaryReader.ReadInt16();
-            return new KerningPair((char)left, (char)right, amount);
+            return new KerningPair(left, right, amount);
         }
 
         public static KerningPair ReadXML(XElement element)
         {
-            char left = (char)(int)element.Attribute("first"); 
-            char right = (char)(int)element.Attribute("second"); 
+            int left = (int)element.Attribute("first");
+            int right = (int)element.Attribute("second"); 
             int amount = (int)element.Attribute("amount");
 
             return new KerningPair(left, right, amount); 
@@ -97,8 +97,8 @@ namespace SharpFNT
 
         public static KerningPair ReadText(string[] lineSegments)
         {
-            char left = (char)TextFormatUtility.ReadInt("first", lineSegments);
-            char right = (char)TextFormatUtility.ReadInt("second", lineSegments);
+            int left = TextFormatUtility.ReadInt("first", lineSegments);
+            int right = TextFormatUtility.ReadInt("second", lineSegments);
             int amount = TextFormatUtility.ReadInt("amount", lineSegments);
 
             return new KerningPair(left, right, amount);
