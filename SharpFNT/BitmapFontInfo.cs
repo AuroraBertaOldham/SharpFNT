@@ -70,7 +70,6 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.Outline);
             binaryWriter.Write(this.Face, true);
         }
-
         public void WriteXML(XElement element) 
         {
             element.SetAttributeValue("face", this.Face);
@@ -93,7 +92,6 @@ namespace SharpFNT
 
             element.SetAttributeValue("outline", this.Outline);
         }
-
         public void WriteText(StringBuilder stringBuilder) 
         {
             TextFormatUtility.WriteString("face", this.Face, stringBuilder);
@@ -154,7 +152,6 @@ namespace SharpFNT
 
             return bitmapFontInfo;
         }
-
         public static BitmapFontInfo ReadXML(XElement element)
         {
             BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
@@ -185,7 +182,6 @@ namespace SharpFNT
 
             return bitmapFontInfo;
         }
-
         public static BitmapFontInfo ReadText(string[] lineSegments) 
         {
             BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
@@ -210,7 +206,6 @@ namespace SharpFNT
 
             string[] spacing = TextFormatUtility.ReadValue("spacing", lineSegments).Split(',');
             bitmapFontInfo.SpacingHorizontal = int.Parse(spacing[0]);
-            bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
             bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
 
             bitmapFontInfo.Outline = TextFormatUtility.ReadInt("outline", lineSegments);

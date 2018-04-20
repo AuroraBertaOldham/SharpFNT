@@ -15,41 +15,39 @@ namespace SharpFNT
     {
         public const int SizeInBytes = 10;
 
-        public int Left { get; }
-        public int Right { get; }
+        public int First { get; }
+        public int Second { get; }
         public int Amount { get; }
 
-        public KerningPair(int left, int right, int amount)
+        public KerningPair(int first, int second, int amount)
         {
-            this.Left = left;
-            this.Right = right;
+            this.First = first;
+            this.Second = second;
             this.Amount = amount;
         }
 
         public void WriteBinary(BinaryWriter binaryWriter)
         {
-            binaryWriter.Write((uint)this.Left);
-            binaryWriter.Write((uint)this.Right);
+            binaryWriter.Write((uint)this.First);
+            binaryWriter.Write((uint)this.Second);
             binaryWriter.Write((short)this.Amount);
         }
-
         public void WriteXML(XElement element) 
         {
-            element.SetAttributeValue("first", this.Left);
-            element.SetAttributeValue("second", this.Right);
+            element.SetAttributeValue("first", this.First);
+            element.SetAttributeValue("second", this.Second);
             element.SetAttributeValue("amount", this.Amount);
         }
-
         public void WriteText(StringBuilder stringBuilder)
         {
-            TextFormatUtility.WriteInt("first", this.Left, stringBuilder);
-            TextFormatUtility.WriteInt("right", this.Right, stringBuilder);
+            TextFormatUtility.WriteInt("first", this.First, stringBuilder);
+            TextFormatUtility.WriteInt("second", this.Second, stringBuilder);
             TextFormatUtility.WriteInt("amount", this.Amount, stringBuilder);
         }
 
         public bool Equals(KerningPair other)
         {
-            return this.Left == other.Left && this.Right == other.Right;
+            return this.First == other.First && this.Second == other.Second;
         }
         public override bool Equals(object obj)
         {
@@ -60,7 +58,7 @@ namespace SharpFNT
         {
             unchecked
             {
-                return (this.Left.GetHashCode() * 397) ^ this.Right.GetHashCode();
+                return (this.First.GetHashCode() * 397) ^ this.Second.GetHashCode();
             }
         }
         public static bool operator ==(KerningPair left, KerningPair right)
@@ -75,7 +73,7 @@ namespace SharpFNT
 
         public override string ToString()
         {
-            return $"{nameof(this.Left)}: {this.Left}, {nameof(this.Right)}: {this.Right}, {nameof(this.Amount)}: {this.Amount}";
+            return $"{nameof(this.First)}: {this.First}, {nameof(this.Second)}: {this.Second}, {nameof(this.Amount)}: {this.Amount}";
         }
 
         public static KerningPair ReadBinary(BinaryReader binaryReader)
@@ -85,7 +83,6 @@ namespace SharpFNT
             short amount = binaryReader.ReadInt16();
             return new KerningPair(left, right, amount);
         }
-
         public static KerningPair ReadXML(XElement element)
         {
             int left = (int)element.Attribute("first");
@@ -94,7 +91,6 @@ namespace SharpFNT
 
             return new KerningPair(left, right, amount); 
         }
-
         public static KerningPair ReadText(string[] lineSegments)
         {
             int left = TextFormatUtility.ReadInt("first", lineSegments);

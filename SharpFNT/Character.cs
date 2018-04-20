@@ -49,7 +49,7 @@ namespace SharpFNT
             element.SetAttributeValue("yoffset", this.YOffset);
             element.SetAttributeValue("xadvance", this.XAdvance);
             element.SetAttributeValue("page", this.Page);
-            element.SetAttributeValue("chnl", this.Channel);
+            element.SetAttributeValue("chnl", (int)this.Channel);
         }
         public void WriteText(StringBuilder stringBuilder)
         {
@@ -62,7 +62,7 @@ namespace SharpFNT
             TextFormatUtility.WriteInt("yoffset", this.YOffset, stringBuilder);
             TextFormatUtility.WriteInt("xadvance", this.XAdvance, stringBuilder);
             TextFormatUtility.WriteInt("page", this.Page, stringBuilder);
-            TextFormatUtility.WriteValue("chnl", this.Channel.ToString(), stringBuilder);
+            TextFormatUtility.WriteEnum("chnl", this.Channel, stringBuilder);
         }
 
         public static Character ReadBinary(BinaryReader binaryReader)
@@ -78,7 +78,7 @@ namespace SharpFNT
                 YOffset = binaryReader.ReadInt16(),
                 XAdvance = binaryReader.ReadInt16(),
                 Page = binaryReader.ReadByte(),
-                Channel = (Channel) binaryReader.ReadByte()
+                Channel = (Channel)binaryReader.ReadByte()
             };
         }
         public static Character ReadXML(XElement element)
