@@ -50,7 +50,13 @@ namespace SharpFNT
 
                     case FormatHint.XML:
                     {
-                        using (XmlWriter xmlWriter = XmlWriter.Create(fileStream))
+                        XmlWriterSettings settings = new XmlWriterSettings
+                        {
+                            Indent = true,
+                            IndentChars = "  "
+                        };
+
+                        using (XmlWriter xmlWriter = XmlWriter.Create(fileStream, settings))
                         {
                             this.WriteXML(xmlWriter);
                         }
@@ -135,13 +141,16 @@ namespace SharpFNT
         {
             XDocument document = new XDocument();
 
+            XElement fontElement = new XElement("font");
+            document.Add(fontElement);
+
             // Info
 
             if (this.Info != null)
             {
                 XElement infoElement = new XElement("info");
                 this.Info.WriteXML(infoElement);
-                document.Add(infoElement);
+                fontElement.Add(infoElement);
             }
 
             // Common
@@ -150,7 +159,7 @@ namespace SharpFNT
             {
                 XElement commonElement = new XElement("common");
                 this.Common.WriteXML(commonElement, this.Pages.Count);
-                document.Add(commonElement);
+                fontElement.Add(commonElement);
             }
 
             // Pages
@@ -167,7 +176,7 @@ namespace SharpFNT
                     pagesElement.Add(pageElement);
                 }
 
-                document.Add(pagesElement);
+                fontElement.Add(pagesElement);
             }
 
             // Characters
@@ -184,7 +193,7 @@ namespace SharpFNT
                     charactersElement.Add(characterElement);
                 }
 
-                document.Add(charactersElement);
+                fontElement.Add(charactersElement);
             }
 
             // Kernings
@@ -201,7 +210,7 @@ namespace SharpFNT
                     kerningsElement.Add(kerningElement);
                 }
 
-                document.Add(kerningsElement);
+                fontElement.Add(kerningsElement);
             }
 
             document.WriteTo(xmlWriter);
@@ -216,14 +225,16 @@ namespace SharpFNT
             {
                 stringBuilder.Append("info");
                 this.Info.WriteText(stringBuilder);
+                stringBuilder.AppendLine();
             }
 
             // Common
 
             if (this.Common != null)
             {
-                stringBuilder.AppendLine("common");
+                stringBuilder.Append("common");
                 this.Common.WriteText(stringBuilder, this.Pages.Count);
+                stringBuilder.AppendLine();
             }
 
             // Pages
@@ -232,9 +243,10 @@ namespace SharpFNT
             {
                 foreach (KeyValuePair<int, string> page in this.Pages)
                 {
-                    stringBuilder.AppendLine("page");
+                    stringBuilder.Append("page");
                     TextFormatUtility.WriteInt("id", page.Key, stringBuilder);
-                    TextFormatUtility.WriteString("id", page.Value, stringBuilder);
+                    TextFormatUtility.WriteString("file", page.Value, stringBuilder);
+                    stringBuilder.AppendLine();
                 }
             }
 
@@ -242,13 +254,15 @@ namespace SharpFNT
 
             if (this.Characters != null)
             {
-                stringBuilder.AppendLine("chars");
+                stringBuilder.Append("chars");
                 TextFormatUtility.WriteInt("count", this.Characters.Count, stringBuilder);
+                stringBuilder.AppendLine();
 
                 foreach (Character character in this.Characters.Values)
                 {
-                    stringBuilder.AppendLine("char");
+                    stringBuilder.Append("char");
                     character.WriteText(stringBuilder);
+                    stringBuilder.AppendLine();
                 }
 
             }
@@ -257,13 +271,15 @@ namespace SharpFNT
 
             if (this.KerningPairs != null && this.KerningPairs.Count > 0)
             {
-                stringBuilder.AppendLine("kernings");
+                stringBuilder.Append("kernings");
                 TextFormatUtility.WriteInt("count", this.KerningPairs.Count, stringBuilder);
+                stringBuilder.AppendLine();
 
                 foreach (KerningPair kerningPair in this.KerningPairs.Keys)
                 {
-                    stringBuilder.AppendLine("kerning");
+                    stringBuilder.Append("kerning");
                     kerningPair.WriteText(stringBuilder);
+                    stringBuilder.AppendLine();
                 }
 
                 textWriter.Write(stringBuilder);
@@ -321,7 +337,7 @@ namespace SharpFNT
 
             int pageCount = 32;
 
-            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+            while (binaryReader.PeekChar() != -1)
             {
                 BlockID blockId = (BlockID)binaryReader.ReadByte();
 

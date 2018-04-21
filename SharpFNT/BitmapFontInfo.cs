@@ -45,10 +45,10 @@ namespace SharpFNT
 
             byte bitField = 0;
 
-            bitField = bitField.SetBit(0, this.Smooth);
-            bitField = bitField.SetBit(1, this.Unicode);
-            bitField = bitField.SetBit(2, this.Italic);
-            bitField = bitField.SetBit(3, this.Bold);
+            bitField = bitField.SetBit(7, this.Smooth);
+            bitField = bitField.SetBit(6, this.Unicode);
+            bitField = bitField.SetBit(5, this.Italic);
+            bitField = bitField.SetBit(4, this.Bold);
 
             binaryWriter.Write(bitField);
 
@@ -73,20 +73,20 @@ namespace SharpFNT
         {
             element.SetAttributeValue("face", this.Face);
             element.SetAttributeValue("size", this.Size); 
-            element.SetAttributeValue("bold", this.Bold);
-            element.SetAttributeValue("italic", this.Italic);
+            element.SetAttributeValue("bold", Convert.ToInt32(this.Bold));
+            element.SetAttributeValue("italic", Convert.ToInt32(this.Italic));
 
             element.SetAttributeValue("charset", this.Charset);
 
-            element.SetAttributeValue("unicode", this.Unicode);
+            element.SetAttributeValue("unicode", Convert.ToInt32(this.Unicode));
             element.SetAttributeValue("stretchH", this.StretchHeight);
-            element.SetAttributeValue("smooth", this.Smooth);
+            element.SetAttributeValue("smooth", Convert.ToInt32(this.Smooth));
             element.SetAttributeValue("aa", this.SuperSamplingLevel);
 
-            string padding = $"{this.PaddingUp}, {this.PaddingRight}, {this.PaddingDown}, {this.PaddingLeft}";
+            string padding = $"{this.PaddingUp},{this.PaddingRight},{this.PaddingDown},{this.PaddingLeft}";
             element.SetAttributeValue("padding", padding);
 
-            string spacing = $"{this.SpacingHorizontal}, {this.SpacingVertical}";
+            string spacing = $"{this.SpacingHorizontal},{this.SpacingVertical}";
             element.SetAttributeValue("spacing", spacing);
 
             element.SetAttributeValue("outline", this.Outline);
@@ -102,12 +102,13 @@ namespace SharpFNT
 
             TextFormatUtility.WriteBool("unicode", this.Unicode, stringBuilder);
             TextFormatUtility.WriteInt("stretchH", this.StretchHeight, stringBuilder);
+            TextFormatUtility.WriteBool("smooth", this.Smooth, stringBuilder);
             TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, stringBuilder);
 
-            string padding = $"{this.PaddingUp}, {this.PaddingRight}, {this.PaddingDown}, {this.PaddingLeft}";
+            string padding = $"{this.PaddingUp},{this.PaddingRight},{this.PaddingDown},{this.PaddingLeft}";
             TextFormatUtility.WriteValue("padding", padding, stringBuilder);
 
-            string spacing = $"{this.SpacingHorizontal}, {this.SpacingVertical}";
+            string spacing = $"{this.SpacingHorizontal},{this.SpacingVertical}";
             TextFormatUtility.WriteValue("spacing", spacing, stringBuilder);
 
             TextFormatUtility.WriteInt("outline", this.Outline, stringBuilder);
@@ -126,10 +127,10 @@ namespace SharpFNT
 
             byte bitField = binaryReader.ReadByte();
 
-            bitmapFontInfo.Smooth = bitField.IsBitSet(0);
-            bitmapFontInfo.Unicode = bitField.IsBitSet(1);
-            bitmapFontInfo.Italic = bitField.IsBitSet(2);
-            bitmapFontInfo.Bold = bitField.IsBitSet(3);
+            bitmapFontInfo.Smooth = bitField.IsBitSet(7);
+            bitmapFontInfo.Unicode = bitField.IsBitSet(6);
+            bitmapFontInfo.Italic = bitField.IsBitSet(5);
+            bitmapFontInfo.Bold = bitField.IsBitSet(4);
 
             CharacterSet characterSet = (CharacterSet)binaryReader.ReadByte();
             bitmapFontInfo.Charset = characterSet.ToString().ToUpper();

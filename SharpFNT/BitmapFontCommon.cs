@@ -4,6 +4,7 @@
 // This code is licensed under MIT.
 // ****************************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -35,7 +36,7 @@ namespace SharpFNT
             binaryWriter.Write((ushort)pages);
 
             byte packed = 0;
-            packed = packed.SetBit(7, this.Packed);
+            packed = packed.SetBit(0, this.Packed);
             binaryWriter.Write(packed);
 
             binaryWriter.Write((byte)this.AlphaChannel);
@@ -52,7 +53,7 @@ namespace SharpFNT
 
             element.SetAttributeValue("pages", pages);
 
-            element.SetAttributeValue("packed", this.Packed);
+            element.SetAttributeValue("packed", Convert.ToInt32(this.Packed));
 
             element.SetAttributeValue("alphaChnl", (int)this.AlphaChannel);
             element.SetAttributeValue("redChnl", (int)this.RedChannel);
@@ -92,7 +93,7 @@ namespace SharpFNT
 
             pageCount = binaryReader.ReadUInt16();
 
-            binary.Packed = binaryReader.ReadByte().IsBitSet(7);
+            binary.Packed = binaryReader.ReadByte().IsBitSet(0);
             binary.AlphaChannel = (ChannelData)binaryReader.ReadByte();
             binary.RedChannel = (ChannelData)binaryReader.ReadByte();
             binary.GreenChannel = (ChannelData)binaryReader.ReadByte();

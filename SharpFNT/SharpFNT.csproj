@@ -5,13 +5,17 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>Todd Berta-Oldham</Authors>
-    <Company>Todd Berta-Oldham</Company>
+    <Company></Company>
     <NeutralLanguage>en</NeutralLanguage>
-    <Description>SharpFNT is a C# library for reading Angel Code bitmap fonts.</Description>
-    <Version>0.0.1</Version>
+    <Description>SharpFNT is a C# library for reading and writing Angel Code bitmap fonts in binary, XML and text.</Description>
+    <Version>1.0.0</Version>
     <PackageLicenseUrl>https://github.com/ToddBertaOldham/SharpFNT/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ToddBertaOldham/SharpFNT</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ToddBertaOldham/SharpFNT</RepositoryUrl>
+    <Copyright>Copyright © Todd Berta-Oldham 2018</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageTags>fnt;bitmap;font;bmfont</PackageTags>
   </PropertyGroup>
 
 </Project>

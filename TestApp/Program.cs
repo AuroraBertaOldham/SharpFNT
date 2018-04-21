@@ -61,10 +61,10 @@ namespace TestApp
                         PrintKerningPairs(bitmapFont);
                         break;
                     case ConsoleKey.S:
-                        PrintPropertyValues(bitmapFont.Info);
+                        PrintInfo(bitmapFont);
                         break;
                     case ConsoleKey.D:
-                        PrintPropertyValues(bitmapFont.Common);
+                        PrintCommon(bitmapFont);
                         break;
                     case ConsoleKey.F:
                         PrintPages(bitmapFont);
