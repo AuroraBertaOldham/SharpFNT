@@ -46,20 +46,23 @@ namespace SharpFNT
 
             return stringBuilder.ToString();
         }
-        public static void Write(this BinaryWriter binaryWriter, string @string, bool asCString)
+        public static void Write(this BinaryWriter binaryWriter, string value, bool asCString)
         {
             if (asCString)
             {
-                foreach (char character in @string)
+                if (value != null)
                 {
-                    binaryWriter.Write((byte)character);
+                    foreach (char character in value)
+                    {
+                        binaryWriter.Write((byte) character);
+                    }
                 }
 
                 binaryWriter.Write((byte)0);
             }
             else
             {
-                binaryWriter.Write(@string);
+                binaryWriter.Write(value);
             }
         }
 

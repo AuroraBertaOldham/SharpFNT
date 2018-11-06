@@ -40,7 +40,7 @@ namespace SharpFNT
 
         public void WriteBinary(BinaryWriter binaryWriter)
         {
-            binaryWriter.Write(MinSizeInBytes + this.Face.Length + 1);
+            binaryWriter.Write(MinSizeInBytes + (this.Face?.Length ?? 0) + 1);
             binaryWriter.Write((short)this.Size);
 
             byte bitField = 0;
@@ -52,8 +52,19 @@ namespace SharpFNT
 
             binaryWriter.Write(bitField);
 
-            CharacterSet characterSet = (CharacterSet)Enum.Parse(typeof(CharacterSet), this.Charset, true);
-            binaryWriter.Write((byte)characterSet);
+            byte characterSetID = 0;
+
+            if (!string.IsNullOrEmpty(this.Charset))
+            {
+                if (!Enum.TryParse(this.Charset, true, out CharacterSet characterSet))
+                {
+                    throw new FormatException("Invalid character set.");
+                }
+
+                characterSetID = (byte)characterSet;
+            }
+
+            binaryWriter.Write(characterSetID);
 
             binaryWriter.Write((ushort)this.StretchHeight);
             binaryWriter.Write((byte)this.SuperSamplingLevel);
@@ -71,12 +82,12 @@ namespace SharpFNT
         }
         public void WriteXML(XElement element) 
         {
-            element.SetAttributeValue("face", this.Face);
+            element.SetAttributeValue("face", this.Face ?? string.Empty);
             element.SetAttributeValue("size", this.Size); 
             element.SetAttributeValue("bold", Convert.ToInt32(this.Bold));
             element.SetAttributeValue("italic", Convert.ToInt32(this.Italic));
 
-            element.SetAttributeValue("charset", this.Charset);
+            element.SetAttributeValue("charset", this.Charset ?? string.Empty);
 
             element.SetAttributeValue("unicode", Convert.ToInt32(this.Unicode));
             element.SetAttributeValue("stretchH", this.StretchHeight);
@@ -93,12 +104,12 @@ namespace SharpFNT
         }
         public void WriteText(StringBuilder stringBuilder) 
         {
-            TextFormatUtility.WriteString("face", this.Face, stringBuilder);
+            TextFormatUtility.WriteString("face", this.Face ?? string.Empty, stringBuilder);
             TextFormatUtility.WriteInt("size", this.Size, stringBuilder);
             TextFormatUtility.WriteBool("bold", this.Bold, stringBuilder);
             TextFormatUtility.WriteBool("italic", this.Italic, stringBuilder);
 
-            TextFormatUtility.WriteString("charset", this.Charset, stringBuilder);
+            TextFormatUtility.WriteString("charset", this.Charset ?? string.Empty, stringBuilder);
 
             TextFormatUtility.WriteBool("unicode", this.Unicode, stringBuilder);
             TextFormatUtility.WriteInt("stretchH", this.StretchHeight, stringBuilder);
@@ -155,12 +166,12 @@ namespace SharpFNT
         {
             BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
 
-            bitmapFontInfo.Face = (string)element.Attribute("face");
+            bitmapFontInfo.Face = (string)element.Attribute("face") ?? string.Empty;
             bitmapFontInfo.Size = (int)element.Attribute("size");
             bitmapFontInfo.Bold = (bool)element.Attribute("bold");
             bitmapFontInfo.Italic = (bool)element.Attribute("italic");
 
-            bitmapFontInfo.Charset = (string)element.Attribute("charset");
+            bitmapFontInfo.Charset = (string)element.Attribute("charset") ?? string.Empty;
 
             bitmapFontInfo.Unicode = (bool)element.Attribute("unicode");
             bitmapFontInfo.StretchHeight = (int)element.Attribute("stretchH");
