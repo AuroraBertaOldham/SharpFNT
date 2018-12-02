@@ -17,7 +17,7 @@ namespace SharpFNT.Tests
         {
             BitmapFont bitmapFont = new BitmapFont
             {
-                KerningPairs = new Dictionary<KerningPair, int> {{new KerningPair(2, 6, 5), 5}}
+                KerningPairs = new Dictionary<KerningPair, int> {{new KerningPair(2, 6), 5}}
             };
 
             int kerningAmount = bitmapFont.GetKerningAmount((char) 2, (char) 6);

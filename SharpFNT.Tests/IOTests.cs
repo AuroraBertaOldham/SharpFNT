@@ -129,7 +129,6 @@ namespace SharpFNT.Tests
                         Assert.Fail();
                     }
 
-                    Assert.AreEqual(keyValuePair.Value.ID, value.ID);
                     Assert.AreEqual(keyValuePair.Value.Channel, value.Channel);
                     Assert.AreEqual(keyValuePair.Value.Height, value.Height);
                     Assert.AreEqual(keyValuePair.Value.Page, value.Page);
@@ -155,7 +154,6 @@ namespace SharpFNT.Tests
                     }
 
                     Assert.AreEqual(keyValuePair.Value, value, "One's kerning amount does not equal the two's.");
-                    Assert.AreEqual(keyValuePair.Key.Amount, value, "The kerning amount does not match the property value.");
                 }
             }
         }
