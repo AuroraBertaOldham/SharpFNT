@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace SharpFNT
@@ -91,25 +92,25 @@ namespace SharpFNT
             return (T)Enum.ToObject(typeof(T), value);
         }
 
-        public static void WriteValue(string propertyName, string value, StringBuilder stringBuilder)
+        public static void WriteValue(string propertyName, string value, TextWriter textWriter)
         {
-            stringBuilder.AppendFormat(" {0}={1}", propertyName, value);
+            textWriter.Write(" {0}={1}", propertyName, value);
         }
-        public static void WriteString(string propertyName, string value, StringBuilder stringBuilder) 
+        public static void WriteString(string propertyName, string value, TextWriter textWriter) 
         {
-            stringBuilder.AppendFormat(" {0}=\"{1}\"", propertyName, value);
+            textWriter.Write(" {0}=\"{1}\"", propertyName, value);
         }
-        public static void WriteInt(string propertyName, int value, StringBuilder stringBuilder) 
+        public static void WriteInt(string propertyName, int value, TextWriter textWriter) 
         {
-            WriteValue(propertyName, value.ToString(), stringBuilder);
+            WriteValue(propertyName, value.ToString(), textWriter);
         }
-        public static void WriteBool(string propertyName, bool value, StringBuilder stringBuilder) 
+        public static void WriteBool(string propertyName, bool value, TextWriter textWriter) 
         {
-            WriteValue(propertyName, value ? "1" : "0", stringBuilder);
+            WriteValue(propertyName, value ? "1" : "0", textWriter);
         }
-        public static void WriteEnum<T>(string propertyName, T value, StringBuilder stringBuilder)
+        public static void WriteEnum<T>(string propertyName, T value, TextWriter textWriter)
         {
-            WriteInt(propertyName, Convert.ToInt32(value), stringBuilder);
+            WriteInt(propertyName, Convert.ToInt32(value), textWriter);
         }
     }
 }

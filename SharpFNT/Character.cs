@@ -6,7 +6,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Linq;
 
 namespace SharpFNT
@@ -52,18 +51,18 @@ namespace SharpFNT
             element.SetAttributeValue("page", this.Page);
             element.SetAttributeValue("chnl", (int)this.Channel);
         }
-        public void WriteText(StringBuilder stringBuilder)
+        public void WriteText(TextWriter textWriter)
         {
-            TextFormatUtility.WriteInt("id", this.ID, stringBuilder);
-            TextFormatUtility.WriteInt("x", this.X, stringBuilder);
-            TextFormatUtility.WriteInt("y", this.Y, stringBuilder);
-            TextFormatUtility.WriteInt("width", this.Width, stringBuilder);
-            TextFormatUtility.WriteInt("height", this.Height, stringBuilder);
-            TextFormatUtility.WriteInt("xoffset", this.XOffset, stringBuilder);
-            TextFormatUtility.WriteInt("yoffset", this.YOffset, stringBuilder);
-            TextFormatUtility.WriteInt("xadvance", this.XAdvance, stringBuilder);
-            TextFormatUtility.WriteInt("page", this.Page, stringBuilder);
-            TextFormatUtility.WriteEnum("chnl", this.Channel, stringBuilder);
+            TextFormatUtility.WriteInt("id", this.ID, textWriter);
+            TextFormatUtility.WriteInt("x", this.X, textWriter);
+            TextFormatUtility.WriteInt("y", this.Y, textWriter);
+            TextFormatUtility.WriteInt("width", this.Width, textWriter);
+            TextFormatUtility.WriteInt("height", this.Height, textWriter);
+            TextFormatUtility.WriteInt("xoffset", this.XOffset, textWriter);
+            TextFormatUtility.WriteInt("yoffset", this.YOffset, textWriter);
+            TextFormatUtility.WriteInt("xadvance", this.XAdvance, textWriter);
+            TextFormatUtility.WriteInt("page", this.Page, textWriter);
+            TextFormatUtility.WriteEnum("chnl", this.Channel, textWriter);
         }
 
         public static Character ReadBinary(BinaryReader binaryReader)

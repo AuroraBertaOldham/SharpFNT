@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Linq;
 
 namespace SharpFNT
@@ -60,21 +59,21 @@ namespace SharpFNT
             element.SetAttributeValue("greenChnl", (int)this.GreenChannel);
             element.SetAttributeValue("blueChnl", (int)this.BlueChannel);
         }
-        public void WriteText(StringBuilder stringBuilder, int pages)
+        public void WriteText(TextWriter textWriter, int pages)
         {
-            TextFormatUtility.WriteInt("lineHeight", this.LineHeight, stringBuilder);
-            TextFormatUtility.WriteInt("base", this.Base, stringBuilder);
-            TextFormatUtility.WriteInt("scaleW", this.ScaleWidth, stringBuilder);
-            TextFormatUtility.WriteInt("scaleH", this.ScaleHeight, stringBuilder);
+            TextFormatUtility.WriteInt("lineHeight", this.LineHeight, textWriter);
+            TextFormatUtility.WriteInt("base", this.Base, textWriter);
+            TextFormatUtility.WriteInt("scaleW", this.ScaleWidth, textWriter);
+            TextFormatUtility.WriteInt("scaleH", this.ScaleHeight, textWriter);
 
-            TextFormatUtility.WriteInt("pages", pages, stringBuilder);
+            TextFormatUtility.WriteInt("pages", pages, textWriter);
 
-            TextFormatUtility.WriteBool("packed", this.Packed, stringBuilder);
+            TextFormatUtility.WriteBool("packed", this.Packed, textWriter);
 
-            TextFormatUtility.WriteEnum("alphaChnl", this.AlphaChannel, stringBuilder);
-            TextFormatUtility.WriteEnum("redChnl", this.RedChannel, stringBuilder);
-            TextFormatUtility.WriteEnum("greenChnl", this.GreenChannel, stringBuilder);
-            TextFormatUtility.WriteEnum("blueChnl", this.BlueChannel, stringBuilder);
+            TextFormatUtility.WriteEnum("alphaChnl", this.AlphaChannel, textWriter);
+            TextFormatUtility.WriteEnum("redChnl", this.RedChannel, textWriter);
+            TextFormatUtility.WriteEnum("greenChnl", this.GreenChannel, textWriter);
+            TextFormatUtility.WriteEnum("blueChnl", this.BlueChannel, textWriter);
         }
 
         public static BitmapFontCommon ReadBinary(BinaryReader binaryReader, out int pageCount)

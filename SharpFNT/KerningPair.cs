@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Linq;
 
 namespace SharpFNT
@@ -39,11 +38,11 @@ namespace SharpFNT
             element.SetAttributeValue("second", this.Second);
             element.SetAttributeValue("amount", this.Amount);
         }
-        public void WriteText(StringBuilder stringBuilder)
+        public void WriteText(TextWriter textWriter)
         {
-            TextFormatUtility.WriteInt("first", this.First, stringBuilder);
-            TextFormatUtility.WriteInt("second", this.Second, stringBuilder);
-            TextFormatUtility.WriteInt("amount", this.Amount, stringBuilder);
+            TextFormatUtility.WriteInt("first", this.First, textWriter);
+            TextFormatUtility.WriteInt("second", this.Second, textWriter);
+            TextFormatUtility.WriteInt("amount", this.Amount, textWriter);
         }
 
         public bool Equals(KerningPair other)
@@ -79,26 +78,26 @@ namespace SharpFNT
 
         public static KerningPair ReadBinary(BinaryReader binaryReader)
         {
-            int left = (int)binaryReader.ReadUInt32();
-            int right = (int)binaryReader.ReadUInt32();
+            int first = (int)binaryReader.ReadUInt32();
+            int second = (int)binaryReader.ReadUInt32();
             short amount = binaryReader.ReadInt16();
-            return new KerningPair(left, right, amount);
+            return new KerningPair(first, second, amount);
         }
         public static KerningPair ReadXML(XElement element)
         {
-            int left = (int)element.Attribute("first");
-            int right = (int)element.Attribute("second"); 
+            int first = (int)element.Attribute("first");
+            int second = (int)element.Attribute("second"); 
             int amount = (int)element.Attribute("amount");
 
-            return new KerningPair(left, right, amount); 
+            return new KerningPair(first, second, amount); 
         }
         public static KerningPair ReadText(IReadOnlyList<string> lineSegments)
         {
-            int left = TextFormatUtility.ReadInt("first", lineSegments);
-            int right = TextFormatUtility.ReadInt("second", lineSegments);
+            int first = TextFormatUtility.ReadInt("first", lineSegments);
+            int second = TextFormatUtility.ReadInt("second", lineSegments);
             int amount = TextFormatUtility.ReadInt("amount", lineSegments);
 
-            return new KerningPair(left, right, amount);
+            return new KerningPair(first, second, amount);
         }
     }
 }

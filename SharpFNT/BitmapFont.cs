@@ -217,24 +217,22 @@ namespace SharpFNT
         }
         public void WriteText(TextWriter textWriter) 
         {
-            StringBuilder stringBuilder = new StringBuilder(4096);
-
             // Info
 
             if (this.Info != null)
             {
-                stringBuilder.Append("info");
-                this.Info.WriteText(stringBuilder);
-                stringBuilder.AppendLine();
+                textWriter.Write("info");
+                this.Info.WriteText(textWriter);
+                textWriter.WriteLine();
             }
 
             // Common
 
             if (this.Common != null)
             {
-                stringBuilder.Append("common");
-                this.Common.WriteText(stringBuilder, this.Pages.Count);
-                stringBuilder.AppendLine();
+                textWriter.Write("common");
+                this.Common.WriteText(textWriter, this.Pages.Count);
+                textWriter.WriteLine();
             }
 
             // Pages
@@ -243,10 +241,10 @@ namespace SharpFNT
             {
                 foreach (KeyValuePair<int, string> page in this.Pages)
                 {
-                    stringBuilder.Append("page");
-                    TextFormatUtility.WriteInt("id", page.Key, stringBuilder);
-                    TextFormatUtility.WriteString("file", page.Value, stringBuilder);
-                    stringBuilder.AppendLine();
+                    textWriter.Write("page");
+                    TextFormatUtility.WriteInt("id", page.Key, textWriter);
+                    TextFormatUtility.WriteString("file", page.Value, textWriter);
+                    textWriter.WriteLine();
                 }
             }
 
@@ -254,15 +252,15 @@ namespace SharpFNT
 
             if (this.Characters != null)
             {
-                stringBuilder.Append("chars");
-                TextFormatUtility.WriteInt("count", this.Characters.Count, stringBuilder);
-                stringBuilder.AppendLine();
+                textWriter.Write("chars");
+                TextFormatUtility.WriteInt("count", this.Characters.Count, textWriter);
+                textWriter.WriteLine();
 
                 foreach (Character character in this.Characters.Values)
                 {
-                    stringBuilder.Append("char");
-                    character.WriteText(stringBuilder);
-                    stringBuilder.AppendLine();
+                    textWriter.Write("char");
+                    character.WriteText(textWriter);
+                    textWriter.WriteLine();
                 }
 
             }
@@ -271,18 +269,16 @@ namespace SharpFNT
 
             if (this.KerningPairs != null && this.KerningPairs.Count > 0)
             {
-                stringBuilder.Append("kernings");
-                TextFormatUtility.WriteInt("count", this.KerningPairs.Count, stringBuilder);
-                stringBuilder.AppendLine();
+                textWriter.Write("kernings");
+                TextFormatUtility.WriteInt("count", this.KerningPairs.Count, textWriter);
+                textWriter.WriteLine();
 
                 foreach (KerningPair kerningPair in this.KerningPairs.Keys)
                 {
-                    stringBuilder.Append("kerning");
-                    kerningPair.WriteText(stringBuilder);
-                    stringBuilder.AppendLine();
+                    textWriter.Write("kerning");
+                    kerningPair.WriteText(textWriter);
+                    textWriter.WriteLine();
                 }
-
-                textWriter.Write(stringBuilder);
             }
         }
 
@@ -403,6 +399,7 @@ namespace SharpFNT
                         for (int i = 0; i < kerningCount; i++)
                         {
                             KerningPair kerningPair = KerningPair.ReadBinary(binaryReader);
+                            if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                             bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                         }
 
@@ -491,6 +488,7 @@ namespace SharpFNT
                 foreach (XElement kerningElement in kerningsElement.Elements("kerning"))
                 {
                     KerningPair kerningPair = KerningPair.ReadXML(kerningElement);
+                    if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                     bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                 }
             }
@@ -555,6 +553,7 @@ namespace SharpFNT
                         {
                             IReadOnlyList<string> kerningLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
                             KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments);
+                            if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                             bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
                         }
 

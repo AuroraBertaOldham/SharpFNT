@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Linq;
 
 namespace SharpFNT
@@ -102,27 +101,27 @@ namespace SharpFNT
 
             element.SetAttributeValue("outline", this.Outline);
         }
-        public void WriteText(StringBuilder stringBuilder) 
+        public void WriteText(TextWriter textWriter) 
         {
-            TextFormatUtility.WriteString("face", this.Face ?? string.Empty, stringBuilder);
-            TextFormatUtility.WriteInt("size", this.Size, stringBuilder);
-            TextFormatUtility.WriteBool("bold", this.Bold, stringBuilder);
-            TextFormatUtility.WriteBool("italic", this.Italic, stringBuilder);
+            TextFormatUtility.WriteString("face", this.Face ?? string.Empty, textWriter);
+            TextFormatUtility.WriteInt("size", this.Size, textWriter);
+            TextFormatUtility.WriteBool("bold", this.Bold, textWriter);
+            TextFormatUtility.WriteBool("italic", this.Italic, textWriter);
 
-            TextFormatUtility.WriteString("charset", this.Charset ?? string.Empty, stringBuilder);
+            TextFormatUtility.WriteString("charset", this.Charset ?? string.Empty, textWriter);
 
-            TextFormatUtility.WriteBool("unicode", this.Unicode, stringBuilder);
-            TextFormatUtility.WriteInt("stretchH", this.StretchHeight, stringBuilder);
-            TextFormatUtility.WriteBool("smooth", this.Smooth, stringBuilder);
-            TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, stringBuilder);
+            TextFormatUtility.WriteBool("unicode", this.Unicode, textWriter);
+            TextFormatUtility.WriteInt("stretchH", this.StretchHeight, textWriter);
+            TextFormatUtility.WriteBool("smooth", this.Smooth, textWriter);
+            TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, textWriter);
 
             string padding = $"{this.PaddingUp},{this.PaddingRight},{this.PaddingDown},{this.PaddingLeft}";
-            TextFormatUtility.WriteValue("padding", padding, stringBuilder);
+            TextFormatUtility.WriteValue("padding", padding, textWriter);
 
             string spacing = $"{this.SpacingHorizontal},{this.SpacingVertical}";
-            TextFormatUtility.WriteValue("spacing", spacing, stringBuilder);
+            TextFormatUtility.WriteValue("spacing", spacing, textWriter);
 
-            TextFormatUtility.WriteInt("outline", this.Outline, stringBuilder);
+            TextFormatUtility.WriteInt("outline", this.Outline, textWriter);
         }
 
         public static BitmapFontInfo ReadBinary(BinaryReader binaryReader)
