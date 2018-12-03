@@ -16,9 +16,17 @@ namespace SharpFNT.Tests
     public class IOTests
     {
         [TestMethod]
+        public void AutoRead()
+        {
+            Compare(BitmapFont.FromFile("Binary.fnt"), BitmapFont.FromFile("Binary.fnt", FormatHint.Binary));
+            Compare(BitmapFont.FromFile("XML.fnt"), BitmapFont.FromFile("XML.fnt", FormatHint.XML));
+            Compare(BitmapFont.FromFile("Text.fnt"), BitmapFont.FromFile("Text.fnt", FormatHint.Text));
+        }
+
+        [TestMethod]
         public void BinaryWrite()
         {
-            BitmapFont one = BitmapFont.FromFile("Binary.fnt");
+            BitmapFont one = BitmapFont.FromFile("Binary.fnt", FormatHint.Binary);
             BitmapFont two = ReadBackBinary(one);
 
             Compare(one, two);
@@ -27,7 +35,7 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void XMLWrite()
         {
-            BitmapFont one = BitmapFont.FromFile("XML.fnt");
+            BitmapFont one = BitmapFont.FromFile("XML.fnt", FormatHint.XML);
             BitmapFont two = ReadBackXML(one);
 
             Compare(one, two);
@@ -36,7 +44,7 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void TextWrite()
         {
-            BitmapFont one = BitmapFont.FromFile("Text.fnt");
+            BitmapFont one = BitmapFont.FromFile("Text.fnt", FormatHint.Text);
             BitmapFont two = ReadBackText(one);
 
             Compare(one, two);
@@ -129,7 +137,6 @@ namespace SharpFNT.Tests
                         Assert.Fail();
                     }
 
-                    Assert.AreEqual(keyValuePair.Value.ID, value.ID);
                     Assert.AreEqual(keyValuePair.Value.Channel, value.Channel);
                     Assert.AreEqual(keyValuePair.Value.Height, value.Height);
                     Assert.AreEqual(keyValuePair.Value.Page, value.Page);
@@ -155,7 +162,6 @@ namespace SharpFNT.Tests
                     }
 
                     Assert.AreEqual(keyValuePair.Value, value, "One's kerning amount does not equal the two's.");
-                    Assert.AreEqual(keyValuePair.Key.Amount, value, "The kerning amount does not match the property value.");
                 }
             }
         }

@@ -14,7 +14,6 @@ namespace SharpFNT
     {
         public const int SizeInBytes = 20;
 
-        public int ID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int Width { get; set; }
@@ -25,9 +24,9 @@ namespace SharpFNT
         public int Page { get; set; }
         public Channel Channel { get; set; }
 
-        public void WriteBinary(BinaryWriter binaryWriter) 
+        public void WriteBinary(BinaryWriter binaryWriter, int id) 
         {
-            binaryWriter.Write((uint)this.ID);
+            binaryWriter.Write((uint)id);
             binaryWriter.Write((ushort)this.X);
             binaryWriter.Write((ushort)this.Y);
             binaryWriter.Write((ushort)this.Width);
@@ -38,9 +37,9 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.Page);
             binaryWriter.Write((byte)this.Channel);
         }
-        public void WriteXML(XElement element) 
+        public void WriteXML(XElement element, int id) 
         {
-            element.SetAttributeValue("id", this.ID);
+            element.SetAttributeValue("id", id);
             element.SetAttributeValue("x", this.X);
             element.SetAttributeValue("y", this.Y);
             element.SetAttributeValue("width", this.Width);
@@ -51,9 +50,9 @@ namespace SharpFNT
             element.SetAttributeValue("page", this.Page);
             element.SetAttributeValue("chnl", (int)this.Channel);
         }
-        public void WriteText(TextWriter textWriter)
+        public void WriteText(TextWriter textWriter, int id)
         {
-            TextFormatUtility.WriteInt("id", this.ID, textWriter);
+            TextFormatUtility.WriteInt("id", id, textWriter);
             TextFormatUtility.WriteInt("x", this.X, textWriter);
             TextFormatUtility.WriteInt("y", this.Y, textWriter);
             TextFormatUtility.WriteInt("width", this.Width, textWriter);
@@ -65,11 +64,12 @@ namespace SharpFNT
             TextFormatUtility.WriteEnum("chnl", this.Channel, textWriter);
         }
 
-        public static Character ReadBinary(BinaryReader binaryReader)
+        public static Character ReadBinary(BinaryReader binaryReader, out int id)
         {
+            id = (int)binaryReader.ReadUInt32();
+
             return new Character
             {
-                ID = (int)binaryReader.ReadUInt32(),
                 X = binaryReader.ReadUInt16(),
                 Y = binaryReader.ReadUInt16(),
                 Width = binaryReader.ReadUInt16(),
@@ -78,14 +78,15 @@ namespace SharpFNT
                 YOffset = binaryReader.ReadInt16(),
                 XAdvance = binaryReader.ReadInt16(),
                 Page = binaryReader.ReadByte(),
-                Channel = (Channel)binaryReader.ReadByte()
+                Channel = (Channel) binaryReader.ReadByte()
             };
         }
-        public static Character ReadXML(XElement element)
+        public static Character ReadXML(XElement element, out int id)
         {
+            id = (int) element.Attribute("id");
+
             return new Character
             {
-                ID = (int)element.Attribute("id"),
                 X = (int)element.Attribute("x"),
                 Y = (int)element.Attribute("y"),
                 Width = (int)element.Attribute("width"),
@@ -97,11 +98,12 @@ namespace SharpFNT
                 Channel = element.Attribute("chnl").GetEnumValue<Channel>()
             };
         }
-        public static Character ReadText(IReadOnlyList<string> lineSegments) 
+        public static Character ReadText(IReadOnlyList<string> lineSegments, out int id)
         {
+            id = TextFormatUtility.ReadInt("id", lineSegments);
+
             return new Character
             {
-                ID = TextFormatUtility.ReadInt("id", lineSegments),
                 X = TextFormatUtility.ReadInt("x", lineSegments),
                 Y = TextFormatUtility.ReadInt("y", lineSegments),
                 Width = TextFormatUtility.ReadInt("width", lineSegments),

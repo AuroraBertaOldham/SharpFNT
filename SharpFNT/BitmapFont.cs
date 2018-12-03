@@ -8,9 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+
+[assembly: InternalsVisibleTo("SharpFNT.Tests")]
 
 namespace SharpFNT
 {
@@ -120,9 +123,9 @@ namespace SharpFNT
                 binaryWriter.Write((byte)BlockID.Characters);
                 binaryWriter.Write(this.Characters.Values.Count * Character.SizeInBytes);
 
-                foreach (Character character in this.Characters.Values)
+                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
                 {
-                    character.WriteBinary(binaryWriter);
+                    keyValuePair.Value.WriteBinary(binaryWriter, keyValuePair.Key);
                 }
             }
 
@@ -131,9 +134,9 @@ namespace SharpFNT
                 binaryWriter.Write((byte)BlockID.KerningPairs);
                 binaryWriter.Write(this.KerningPairs.Keys.Count * KerningPair.SizeInBytes);
 
-                foreach (KerningPair kerningPair in this.KerningPairs.Keys)
+                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
                 {
-                    kerningPair.WriteBinary(binaryWriter);
+                    keyValuePair.Key.WriteBinary(binaryWriter, keyValuePair.Value);
                 }
             }
         }
@@ -186,10 +189,10 @@ namespace SharpFNT
                 XElement charactersElement = new XElement("chars");
                 charactersElement.SetAttributeValue("count", this.Characters.Count);
 
-                foreach (Character character in this.Characters.Values)
+                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
                 {
                     XElement characterElement = new XElement("char");
-                    character.WriteXML(characterElement);
+                    keyValuePair.Value.WriteXML(characterElement, keyValuePair.Key);
                     charactersElement.Add(characterElement);
                 }
 
@@ -203,10 +206,10 @@ namespace SharpFNT
                 XElement kerningsElement = new XElement("kernings");
                 kerningsElement.SetAttributeValue("count", this.KerningPairs.Count);
 
-                foreach (KerningPair kerningPair in this.KerningPairs.Keys)
+                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
                 {
                     XElement kerningElement = new XElement("kerning");
-                    kerningPair.WriteXML(kerningElement);
+                    keyValuePair.Key.WriteXML(kerningElement, keyValuePair.Value);
                     kerningsElement.Add(kerningElement);
                 }
 
@@ -256,10 +259,10 @@ namespace SharpFNT
                 TextFormatUtility.WriteInt("count", this.Characters.Count, textWriter);
                 textWriter.WriteLine();
 
-                foreach (Character character in this.Characters.Values)
+                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
                 {
                     textWriter.Write("char");
-                    character.WriteText(textWriter);
+                    keyValuePair.Value.WriteText(textWriter, keyValuePair.Key);
                     textWriter.WriteLine();
                 }
 
@@ -273,10 +276,10 @@ namespace SharpFNT
                 TextFormatUtility.WriteInt("count", this.KerningPairs.Count, textWriter);
                 textWriter.WriteLine();
 
-                foreach (KerningPair kerningPair in this.KerningPairs.Keys)
+                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
                 {
                     textWriter.Write("kerning");
-                    kerningPair.WriteText(textWriter);
+                    keyValuePair.Key.WriteText(textWriter, keyValuePair.Value);
                     textWriter.WriteLine();
                 }
             }
@@ -289,7 +292,7 @@ namespace SharpFNT
                 return 0;
             }
 
-            this.KerningPairs.TryGetValue(new KerningPair(left, right, 0), out int kerningValue);
+            this.KerningPairs.TryGetValue(new KerningPair(left, right), out int kerningValue);
 
             return kerningValue;
         }
@@ -377,8 +380,8 @@ namespace SharpFNT
 
                         for (int i = 0; i < characterCount; i++)
                         {
-                            Character character = Character.ReadBinary(binaryReader);
-                            bitmapFont.Characters[character.ID] = character;
+                            Character character = Character.ReadBinary(binaryReader, out int id);
+                            bitmapFont.Characters[id] = character;
                         }
 
                         break;
@@ -398,9 +401,9 @@ namespace SharpFNT
 
                         for (int i = 0; i < kerningCount; i++)
                         {
-                            KerningPair kerningPair = KerningPair.ReadBinary(binaryReader);
+                            KerningPair kerningPair = KerningPair.ReadBinary(binaryReader, out int amount);
                             if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
-                            bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
+                            bitmapFont.KerningPairs[kerningPair] = amount;
                         }
 
                         break;
@@ -471,8 +474,8 @@ namespace SharpFNT
 
                 foreach (XElement characterElement in charactersElement.Elements("char"))
                 {
-                    Character character = Character.ReadXML(characterElement);
-                    bitmapFont.Characters[character.ID] = character;
+                    Character character = Character.ReadXML(characterElement, out int id);
+                    bitmapFont.Characters[id] = character;
                 }
             }
 
@@ -487,9 +490,9 @@ namespace SharpFNT
 
                 foreach (XElement kerningElement in kerningsElement.Elements("kerning"))
                 {
-                    KerningPair kerningPair = KerningPair.ReadXML(kerningElement);
+                    KerningPair kerningPair = KerningPair.ReadXML(kerningElement, out int amount);
                     if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
-                    bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
+                    bitmapFont.KerningPairs[kerningPair] = amount;
                 }
             }
 
@@ -536,8 +539,8 @@ namespace SharpFNT
                         for (int i = 0; i < count; i++)
                         {
                             IReadOnlyList<string> characterLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
-                            Character character = Character.ReadText(characterLineSegments);
-                            bitmapFont.Characters[character.ID] = character;
+                            Character character = Character.ReadText(characterLineSegments, out int id);
+                            bitmapFont.Characters[id] = character;
                         }
 
                         break;
@@ -552,9 +555,9 @@ namespace SharpFNT
                         for (int i = 0; i < count; i++)
                         {
                             IReadOnlyList<string> kerningLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
-                            KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments);
+                            KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments, out int amount);
                             if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
-                            bitmapFont.KerningPairs[kerningPair] = kerningPair.Amount;
+                            bitmapFont.KerningPairs[kerningPair] = amount;
                         }
 
                         break;

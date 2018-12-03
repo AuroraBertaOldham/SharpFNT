@@ -17,32 +17,30 @@ namespace SharpFNT
 
         public int First { get; }
         public int Second { get; }
-        public int Amount { get; }
 
-        public KerningPair(int first, int second, int amount)
+        public KerningPair(int first, int second)
         {
             this.First = first;
             this.Second = second;
-            this.Amount = amount;
         }
 
-        public void WriteBinary(BinaryWriter binaryWriter)
+        public void WriteBinary(BinaryWriter binaryWriter, int amount)
         {
             binaryWriter.Write((uint)this.First);
             binaryWriter.Write((uint)this.Second);
-            binaryWriter.Write((short)this.Amount);
+            binaryWriter.Write((short)amount);
         }
-        public void WriteXML(XElement element) 
+        public void WriteXML(XElement element, int amount) 
         {
             element.SetAttributeValue("first", this.First);
             element.SetAttributeValue("second", this.Second);
-            element.SetAttributeValue("amount", this.Amount);
+            element.SetAttributeValue("amount", amount);
         }
-        public void WriteText(TextWriter textWriter)
+        public void WriteText(TextWriter textWriter, int amount)
         {
             TextFormatUtility.WriteInt("first", this.First, textWriter);
             TextFormatUtility.WriteInt("second", this.Second, textWriter);
-            TextFormatUtility.WriteInt("amount", this.Amount, textWriter);
+            TextFormatUtility.WriteInt("amount", amount, textWriter);
         }
 
         public bool Equals(KerningPair other)
@@ -65,7 +63,6 @@ namespace SharpFNT
         {
             return left.Equals(right);
         }
-
         public static bool operator !=(KerningPair left, KerningPair right)
         {
             return !left.Equals(right);
@@ -73,31 +70,32 @@ namespace SharpFNT
 
         public override string ToString()
         {
-            return $"{nameof(this.First)}: {this.First}, {nameof(this.Second)}: {this.Second}, {nameof(this.Amount)}: {this.Amount}";
+            return $"{nameof(this.First)}: {this.First}, {nameof(this.Second)}: {this.Second}";
         }
 
-        public static KerningPair ReadBinary(BinaryReader binaryReader)
+        public static KerningPair ReadBinary(BinaryReader binaryReader, out int amount)
         {
             int first = (int)binaryReader.ReadUInt32();
             int second = (int)binaryReader.ReadUInt32();
-            short amount = binaryReader.ReadInt16();
-            return new KerningPair(first, second, amount);
+            amount = binaryReader.ReadInt16();
+
+            return new KerningPair(first, second);
         }
-        public static KerningPair ReadXML(XElement element)
+        public static KerningPair ReadXML(XElement element, out int amount)
         {
             int first = (int)element.Attribute("first");
             int second = (int)element.Attribute("second"); 
-            int amount = (int)element.Attribute("amount");
+            amount = (int)element.Attribute("amount");
 
-            return new KerningPair(first, second, amount); 
+            return new KerningPair(first, second); 
         }
-        public static KerningPair ReadText(IReadOnlyList<string> lineSegments)
+        public static KerningPair ReadText(IReadOnlyList<string> lineSegments, out int amount)
         {
             int first = TextFormatUtility.ReadInt("first", lineSegments);
             int second = TextFormatUtility.ReadInt("second", lineSegments);
-            int amount = TextFormatUtility.ReadInt("amount", lineSegments);
+            amount = TextFormatUtility.ReadInt("amount", lineSegments);
 
-            return new KerningPair(first, second, amount);
+            return new KerningPair(first, second);
         }
     }
 }
