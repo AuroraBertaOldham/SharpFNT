@@ -20,6 +20,8 @@ namespace SharpFNT
         }
         public static byte SetBit(this byte @byte, int index, bool set)
         {
+            if (index < 0 || index > 7) throw new ArgumentOutOfRangeException(nameof(index));
+
             if (set)
             {
                 return (byte)(@byte | (1 << index));
