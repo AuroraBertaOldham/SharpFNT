@@ -77,7 +77,7 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.SpacingVertical);
 
             binaryWriter.Write((byte)this.Outline);
-            binaryWriter.Write(this.Face, true);
+            binaryWriter.WriteNullTerminated(this.Face);
         }
         public void WriteXML(XElement element) 
         {

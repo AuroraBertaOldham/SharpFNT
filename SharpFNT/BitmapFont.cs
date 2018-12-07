@@ -21,9 +21,9 @@ namespace SharpFNT
     {
         public const int ImplementedVersion = 3;
 
-        private const byte MagicOne = 66;
-        private const byte MagicTwo = 77;
-        private const byte MagicThree = 70;
+        internal const byte MagicOne = 66;
+        internal const byte MagicTwo = 77;
+        internal const byte MagicThree = 70;
 
         public BitmapFontInfo Info { get; set; }
 
@@ -107,13 +107,13 @@ namespace SharpFNT
                 binaryWriter.Write((byte)BlockID.Pages);
                 binaryWriter.Write(this.Pages.Values.Sum(page => page.Length + 1));
 
+                // Unlike the XML and text formats, the binary format requires page IDs to be consecutive and zero based. 
+                
                 int index = 0;
-                foreach (KeyValuePair<int, string> page in this.Pages)
+                foreach (KeyValuePair<int, string> keyValuePair in this.Pages.OrderBy(pair => pair.Key))
                 {
-                    if (page.Key != index) throw new InvalidDataException("The binary format requires that the page IDs be zero based.");
-
-                    binaryWriter.Write(page.Value, true);
-
+                    if (keyValuePair.Key != index) throw new InvalidDataException("The binary format requires that page IDs be consecutive and zero based.");
+                    binaryWriter.WriteNullTerminated(keyValuePair.Value);
                     index++;
                 }
             }
@@ -338,9 +338,9 @@ namespace SharpFNT
 
             while (binaryReader.PeekChar() != -1)
             {
-                BlockID blockId = (BlockID)binaryReader.ReadByte();
+                BlockID blockID = (BlockID)binaryReader.ReadByte();
 
-                switch (blockId)
+                switch (blockID)
                 {
                     case BlockID.Info:
                     {
@@ -410,7 +410,7 @@ namespace SharpFNT
                     }
                     default:
                     {
-                        throw new ArgumentOutOfRangeException();
+                        throw new InvalidDataException("Invalid block ID.");
                     }
                 }
             }
@@ -582,7 +582,7 @@ namespace SharpFNT
 
                 case FormatHint.XML:
                 {
-                    using (StreamReader streamReader = new StreamReader(stream))
+                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
                     {
                         return ReadXML(streamReader);
                     }
@@ -590,7 +590,7 @@ namespace SharpFNT
 
                 case FormatHint.Text:
                 {
-                    using (StreamReader streamReader = new StreamReader(stream))
+                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
                     {
                         return ReadText(streamReader);
                     }

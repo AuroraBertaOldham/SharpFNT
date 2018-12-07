@@ -48,24 +48,17 @@ namespace SharpFNT
 
             return stringBuilder.ToString();
         }
-        public static void Write(this BinaryWriter binaryWriter, string value, bool asCString)
+        public static void WriteNullTerminated(this BinaryWriter binaryWriter, string value)
         {
-            if (asCString)
+            if (value != null)
             {
-                if (value != null)
+                foreach (char character in value)
                 {
-                    foreach (char character in value)
-                    {
-                        binaryWriter.Write((byte) character);
-                    }
+                    binaryWriter.Write((byte)character);
                 }
+            }
 
-                binaryWriter.Write((byte)0);
-            }
-            else
-            {
-                binaryWriter.Write(value);
-            }
+            binaryWriter.Write((byte)0);
         }
 
         public static T GetEnumValue<T>(this XAttribute xAttribute) 

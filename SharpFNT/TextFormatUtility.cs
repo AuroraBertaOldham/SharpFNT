@@ -47,19 +47,21 @@ namespace SharpFNT
             return segments;
         }
 
-        public static string ReadValue(string propertyName, IReadOnlyList<string> segments) 
+        public static string ReadValue(string propertyName, IReadOnlyList<string> segments)
         {
-            for (int i = 1; i < segments.Count; i++)
+            foreach (string segment in segments)
             {
-                string segment = segments[i];
-                int firstEqualsSign = segment.IndexOf('=');
-                if (string.Compare(segment, 0, propertyName, 0, propertyName.Length, StringComparison.OrdinalIgnoreCase) == 0)
+                int equalsSign = segment.IndexOf('=');
+
+                if (equalsSign != propertyName.Length) continue;
+
+                if (string.Compare(segment, 0, propertyName, 0, equalsSign, StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    return segment.Remove(0, firstEqualsSign + 1);   
+                    return segment.Remove(0, equalsSign + 1);   
                 }
             }
 
-            throw new ArgumentException();
+            throw new InvalidDataException("Invalid property name.");
         }
         public static bool ReadBool(string propertyName, IReadOnlyList<string> segments) 
         {
@@ -75,7 +77,7 @@ namespace SharpFNT
                 return false;
             }
 
-            throw new FormatException();
+            throw new FormatException("Invalid boolean format. True should use 1 and false should use 0.");
         }
         public static int ReadInt(string propertyName, IReadOnlyList<string> segments) 
         {

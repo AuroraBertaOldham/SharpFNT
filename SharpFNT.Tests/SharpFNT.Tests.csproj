@@ -7,13 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\TestResources\Binary.fnt" Link="Binary.fnt">
+    <None Remove="TestFontBinary.fnt" />
+    <None Remove="TestFontText.fnt" />
+    <None Remove="TestFontXML.fnt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestFontBinary.fnt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestResources\Text.fnt" Link="Text.fnt">
+    <Content Include="TestFontText.fnt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestResources\XML.fnt" Link="XML.fnt">
+    <Content Include="TestFontXML.fnt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
