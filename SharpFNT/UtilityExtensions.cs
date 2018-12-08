@@ -30,7 +30,7 @@ namespace SharpFNT
             return (byte)(@byte & ~(1 << index));
         }
 
-        public static string ReadCString(this BinaryReader binaryReader)
+        public static string ReadNullTerminatedString(this BinaryReader binaryReader)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -48,7 +48,7 @@ namespace SharpFNT
 
             return stringBuilder.ToString();
         }
-        public static void WriteNullTerminated(this BinaryWriter binaryWriter, string value)
+        public static void WriteNullTerminatedString(this BinaryWriter binaryWriter, string value)
         {
             if (value != null)
             {

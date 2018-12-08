@@ -77,7 +77,7 @@ namespace SharpFNT
             binaryWriter.Write((byte)this.SpacingVertical);
 
             binaryWriter.Write((byte)this.Outline);
-            binaryWriter.WriteNullTerminated(this.Face);
+            binaryWriter.WriteNullTerminatedString(this.Face);
         }
         public void WriteXML(XElement element) 
         {
@@ -157,7 +157,7 @@ namespace SharpFNT
             bitmapFontInfo.SpacingVertical = binaryReader.ReadByte();
 
             bitmapFontInfo.Outline = binaryReader.ReadByte();
-            bitmapFontInfo.Face = binaryReader.ReadCString();
+            bitmapFontInfo.Face = binaryReader.ReadNullTerminatedString();
 
             return bitmapFontInfo;
         }

@@ -113,7 +113,7 @@ namespace SharpFNT
                 foreach (KeyValuePair<int, string> keyValuePair in this.Pages.OrderBy(pair => pair.Key))
                 {
                     if (keyValuePair.Key != index) throw new InvalidDataException("The binary format requires that page IDs be consecutive and zero based.");
-                    binaryWriter.WriteNullTerminated(keyValuePair.Value);
+                    binaryWriter.WriteNullTerminatedString(keyValuePair.Value);
                     index++;
                 }
             }
@@ -360,7 +360,7 @@ namespace SharpFNT
 
                         for (int i = 0; i < pageCount; i++)
                         {
-                            bitmapFont.Pages[i] = binaryReader.ReadCString();
+                            bitmapFont.Pages[i] = binaryReader.ReadNullTerminatedString();
                         }
 
                         break;
