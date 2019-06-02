@@ -21,7 +21,7 @@ bitmapFont.Save("ExampleFont2.fnt", FormatHint.Binary);
 See the [documentation for BMFont](http://www.angelcode.com/products/bmfont/documentation.html) for information on rendering text and the properties of the file format.
 
 ## Download
-SharpFNT can be downloaded on [NuGet](https://www.nuget.org/packages/SharpFNT/).
+SharpFNT can be downloaded on [NuGet](https://www.nuget.org/packages/SharpFNT/). The most recent version is 1.1.0 which makes minor breaking changes. Future versions will follow semantic versioning.
 
 ## License
 Licensed under [MIT](LICENSE).
