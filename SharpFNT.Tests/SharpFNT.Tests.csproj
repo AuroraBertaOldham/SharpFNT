@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Authors>Aurora Berta-Oldham</Authors>
+
+    <Company></Company>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,8 +1,8 @@
-// ****************************************************************************
-// WriteTests.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+//**************************************************************************************************
+// WriteTests.cs                                                                                   *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -112,9 +112,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryWrongMagic()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne - 1);
                     binaryWriter.Write(BitmapFont.MagicTwo + 1);
@@ -131,9 +131,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryWrongVersion()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne);
                     binaryWriter.Write(BitmapFont.MagicTwo);
@@ -150,40 +150,40 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void ReadBinary()
         {
-            BitmapFont result = BitmapFont.FromFile("TestFontBinary.fnt", FormatHint.Binary);
-            Compare(this.TestFont, result);
+            var result = BitmapFont.FromFile("TestFontBinary.fnt", FormatHint.Binary);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void AutoReadBinary()
         {
-            Compare(BitmapFont.FromFile("TestFontBinary.fnt"), this.TestFont);
+            Compare(BitmapFont.FromFile("TestFontBinary.fnt"), TestFont);
         }
 
         [TestMethod]
         public void ReadBackBinary()
         {
-            this.TestFont.Save("SaveTestBinary.fnt", FormatHint.Binary);
-            BitmapFont result = BitmapFont.FromFile("SaveTestBinary.fnt", FormatHint.Binary);
+            TestFont.Save("SaveTestBinary.fnt", FormatHint.Binary);
+            var result = BitmapFont.FromFile("SaveTestBinary.fnt", FormatHint.Binary);
 
-            Compare(this.TestFont, result);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void BinaryCharsetNull()
         {
-            BitmapFont bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
+            var bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     bitmapFont.WriteBinary(binaryWriter);
                 }
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.Binary, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.Binary, true);
                 Assert.AreEqual(CharacterSet.ANSI.ToString(), result.Info.Charset);
             }
         }
@@ -192,9 +192,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryCharactersWrongBlockSize()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne);
                     binaryWriter.Write(BitmapFont.MagicTwo);
@@ -214,9 +214,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryKerningWrongBlockSize()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne);
                     binaryWriter.Write(BitmapFont.MagicTwo);
@@ -236,7 +236,7 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void WriteBinaryInvalidPageIndices()
         {
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 Pages = new Dictionary<int, string>
                 {
@@ -246,9 +246,9 @@ namespace SharpFNT.Tests
                 }
             };
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     bitmapFont.WriteBinary(binaryWriter);
                 }
@@ -259,9 +259,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryInvalidBlock()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne);
                     binaryWriter.Write(BitmapFont.MagicTwo);
@@ -283,11 +283,11 @@ namespace SharpFNT.Tests
             const char second = 'B';
             const int expected = 1;
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                KerningPair kerningPair = new KerningPair(first, second);
+                var kerningPair = new KerningPair(first, second);
 
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(BitmapFont.MagicOne);
                     binaryWriter.Write(BitmapFont.MagicTwo);
@@ -301,7 +301,7 @@ namespace SharpFNT.Tests
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.Binary, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.Binary, true);
                 Assert.AreEqual(expected, result.GetKerningAmount(first, second));
             }
         }
@@ -311,33 +311,33 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void ReadXML()
         {
-            BitmapFont result = BitmapFont.FromFile("TestFontXML.fnt", FormatHint.XML);
-            Compare(this.TestFont, result);
+            var result = BitmapFont.FromFile("TestFontXML.fnt", FormatHint.XML);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void AutoReadXML()
         {
-            Compare(BitmapFont.FromFile("TestFontXML.fnt"), this.TestFont);
+            Compare(BitmapFont.FromFile("TestFontXML.fnt"), TestFont);
         }
 
         [TestMethod]
         public void ReadBackXML()
         {
-            this.TestFont.Save("SaveTestXML.fnt", FormatHint.XML);
-            BitmapFont result = BitmapFont.FromFile("SaveTestXML.fnt", FormatHint.XML);
+            TestFont.Save("SaveTestXML.fnt", FormatHint.XML);
+            var result = BitmapFont.FromFile("SaveTestXML.fnt", FormatHint.XML);
 
-            Compare(this.TestFont, result);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void XMLCharsetNull()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                BitmapFont bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
+                var bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
 
-                XmlWriterSettings settings = new XmlWriterSettings
+                var settings = new XmlWriterSettings
                 {
                     Indent = true,
                     IndentChars = "  ",
@@ -345,14 +345,14 @@ namespace SharpFNT.Tests
                     Encoding = Encoding.UTF8
                 };
 
-                using (XmlWriter xmlWriter = XmlWriter.Create(memoryStream, settings))
+                using (var xmlWriter = XmlWriter.Create(memoryStream, settings))
                 {
                     bitmapFont.WriteXML(xmlWriter);
                 }
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.XML, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.XML, true);
                 Assert.AreEqual(string.Empty, result.Info.Charset);
             }
         }
@@ -364,30 +364,30 @@ namespace SharpFNT.Tests
             const char second = 'B';
             const int expected = 1;
 
-            XmlWriterSettings settings = new XmlWriterSettings
+            var settings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "  ",
                 CloseOutput = false
             };
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                KerningPair kerningPair = new KerningPair(first, second);
+                var kerningPair = new KerningPair(first, second);
 
-                using (XmlWriter xmlWriter = XmlWriter.Create(memoryStream, settings))
+                using (var xmlWriter = XmlWriter.Create(memoryStream, settings))
                 {
-                    XDocument document = new XDocument();
+                    var document = new XDocument();
 
-                    XElement fontElement = new XElement("font");
+                    var fontElement = new XElement("font");
                     document.Add(fontElement);
 
-                    XElement kerningsElement = new XElement("kernings");
+                    var kerningsElement = new XElement("kernings");
                     kerningsElement.SetAttributeValue("count", 2);
 
-                    for (int i = 0; i < 2; i++)
+                    for (var i = 0; i < 2; i++)
                     {
-                        XElement kerningElement = new XElement("kerning");
+                        var kerningElement = new XElement("kerning");
                         kerningPair.WriteXML(kerningElement, expected + i);
                         kerningsElement.Add(kerningElement);
                     }
@@ -399,7 +399,7 @@ namespace SharpFNT.Tests
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.XML, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.XML, true);
                 Assert.AreEqual(expected, result.GetKerningAmount(first, second));
             }
         }
@@ -408,20 +408,20 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadXMLMissingRoot()
         {
-            XmlWriterSettings settings = new XmlWriterSettings
+            var settings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "  ",
                 CloseOutput = false
             };
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (XmlWriter xmlWriter = XmlWriter.Create(memoryStream, settings))
+                using (var xmlWriter = XmlWriter.Create(memoryStream, settings))
                 {
-                    XDocument document = new XDocument();
+                    var document = new XDocument();
 
-                    XElement fontElement = new XElement("nothing");
+                    var fontElement = new XElement("nothing");
                     document.Add(fontElement);
 
                     document.WriteTo(xmlWriter);
@@ -438,40 +438,40 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void ReadText()
         {
-            BitmapFont result = BitmapFont.FromFile("TestFontText.fnt", FormatHint.Text);
-            Compare(this.TestFont, result);
+            var result = BitmapFont.FromFile("TestFontText.fnt", FormatHint.Text);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void AutoReadText()
         {
-            Compare(BitmapFont.FromFile("TestFontText.fnt"), this.TestFont);
+            Compare(BitmapFont.FromFile("TestFontText.fnt"), TestFont);
         }
 
         [TestMethod]
         public void ReadBackText()
         {
-            this.TestFont.Save("SaveTestText.fnt", FormatHint.Text);
-            BitmapFont result = BitmapFont.FromFile("SaveTestText.fnt", FormatHint.Text);
+            TestFont.Save("SaveTestText.fnt", FormatHint.Text);
+            var result = BitmapFont.FromFile("SaveTestText.fnt", FormatHint.Text);
 
-            Compare(this.TestFont, result);
+            Compare(TestFont, result);
         }
 
         [TestMethod]
         public void TextCharsetNull()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                BitmapFont bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
+                var bitmapFont = new BitmapFont { Info = new BitmapFontInfo { Charset = null } };
 
-                using (StreamWriter streamWriter = new StreamWriter(memoryStream, Encoding.UTF8, 1024, true))
+                using (var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8, 1024, true))
                 {
                     bitmapFont.WriteText(streamWriter);
                 }
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.Text, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.Text, true);
                 Assert.AreEqual(string.Empty, result.Info.Charset);
             }
         }
@@ -483,17 +483,17 @@ namespace SharpFNT.Tests
             const char second = 'B';
             const int expected = 1;
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                KerningPair kerningPair = new KerningPair(first, second);
+                var kerningPair = new KerningPair(first, second);
 
-                using (StreamWriter streamWriter = new StreamWriter(memoryStream, Encoding.UTF8, 1024, true))
+                using (var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8, 1024, true))
                 {
                     streamWriter.Write("kernings");
                     TextFormatUtility.WriteInt("count", 2, streamWriter);
                     streamWriter.WriteLine();
 
-                    for (int i = 0; i < 2; i++)
+                    for (var i = 0; i < 2; i++)
                     {
                         streamWriter.Write("kerning");
                         kerningPair.WriteText(streamWriter, expected + i);
@@ -503,7 +503,7 @@ namespace SharpFNT.Tests
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                BitmapFont result = BitmapFont.FromStream(memoryStream, FormatHint.Text, true);
+                var result = BitmapFont.FromStream(memoryStream, FormatHint.Text, true);
                 Assert.AreEqual(expected, result.GetKerningAmount(first, second));
             }
         }
@@ -513,7 +513,7 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void ReadStreamLeaveOpenFalse()
         {
-            using (FileStream fileStream = File.Open("TestFontBinary.fnt", FileMode.Open))
+            using (var fileStream = File.Open("TestFontBinary.fnt", FileMode.Open))
             {
                 BitmapFont.FromStream(fileStream, false);
                 Assert.IsFalse(fileStream.CanRead);
@@ -531,7 +531,7 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SaveBadFormatHint()
         {
-            BitmapFont bitmapFont = new BitmapFont();
+            var bitmapFont = new BitmapFont();
             bitmapFont.Save("InvalidFormatHint.fnt", (FormatHint)3);
         }
 
@@ -540,24 +540,24 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void GetKerning()
         {
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 KerningPairs = new Dictionary<KerningPair, int> { { new KerningPair(2, 6), 5 } }
             };
 
-            int kerningAmount = bitmapFont.GetKerningAmount((char)2, (char)6);
+            var kerningAmount = bitmapFont.GetKerningAmount((char)2, (char)6);
             Assert.AreEqual(kerningAmount, 5);
         }
 
         [TestMethod]
         public void GetKerningWhenNull()
         {
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 KerningPairs = null
             };
 
-            int kerningAmount = bitmapFont.GetKerningAmount((char)2, (char)6);
+            var kerningAmount = bitmapFont.GetKerningAmount((char)2, (char)6);
             Assert.AreEqual(kerningAmount, 0);
         }
 
@@ -566,9 +566,9 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void GetCharacter()
         {
-            Character character = new Character();
+            var character = new Character();
 
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 Characters = new Dictionary<int, Character>
                 {
@@ -582,9 +582,9 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void GetInvalidCharacter()
         {
-            Character character = new Character();
+            var character = new Character();
 
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 Characters = new Dictionary<int, Character>
                 {
@@ -598,9 +598,9 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void GetMissingCharacter()
         {
-            Character character = new Character();
+            var character = new Character();
 
-            BitmapFont bitmapFont = new BitmapFont
+            var bitmapFont = new BitmapFont
             {
                 Characters = new Dictionary<int, Character>
                 {
@@ -614,7 +614,7 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void GetCharacterWhenNull()
         {
-            BitmapFont bitmapFont = new BitmapFont();
+            var bitmapFont = new BitmapFont();
             Assert.AreEqual(null, bitmapFont.GetCharacter((char)5));
         }
 
@@ -665,9 +665,9 @@ namespace SharpFNT.Tests
 
             if (one.Pages != null)
             {
-                foreach (KeyValuePair<int, string> keyValuePair in one.Pages)
+                foreach (var (key, page) in one.Pages)
                 {
-                    if (!two.Pages.TryGetValue(keyValuePair.Key, out string value) || value != keyValuePair.Value)
+                    if (!two.Pages.TryGetValue(key, out var value) || value != page)
                     {
                         Assert.Fail("Page not found.");
                     }
@@ -679,22 +679,22 @@ namespace SharpFNT.Tests
 
             if (one.Characters != null)
             {
-                foreach (KeyValuePair<int, Character> keyValuePair in one.Characters)
+                foreach (var (key, character) in one.Characters)
                 {
-                    if (!two.Characters.TryGetValue(keyValuePair.Key, out Character value))
+                    if (!two.Characters.TryGetValue(key, out var value))
                     {
                         Assert.Fail("Character not found.");
                     }
 
-                    Assert.AreEqual(keyValuePair.Value.Channel, value.Channel, "Channel incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.Height, value.Height, "Height incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.Page, value.Page, "Page incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.Width, value.Width, "Width incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.X, value.X, "X incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.Y, value.Y, "Y incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.XAdvance, value.XAdvance, "XAdvance incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.XOffset, value.XOffset, "XOffset incorrect.");
-                    Assert.AreEqual(keyValuePair.Value.YOffset, value.YOffset, "YOffset incorrect.");
+                    Assert.AreEqual(character.Channel, value.Channel, "Channel incorrect.");
+                    Assert.AreEqual(character.Height, value.Height, "Height incorrect.");
+                    Assert.AreEqual(character.Page, value.Page, "Page incorrect.");
+                    Assert.AreEqual(character.Width, value.Width, "Width incorrect.");
+                    Assert.AreEqual(character.X, value.X, "X incorrect.");
+                    Assert.AreEqual(character.Y, value.Y, "Y incorrect.");
+                    Assert.AreEqual(character.XAdvance, value.XAdvance, "XAdvance incorrect.");
+                    Assert.AreEqual(character.XOffset, value.XOffset, "XOffset incorrect.");
+                    Assert.AreEqual(character.YOffset, value.YOffset, "YOffset incorrect.");
                 }
             }
 
@@ -703,14 +703,14 @@ namespace SharpFNT.Tests
 
             if (one.KerningPairs != null)
             {
-                foreach (KeyValuePair<KerningPair, int> keyValuePair in one.KerningPairs)
+                foreach (var (pair, amount) in one.KerningPairs)
                 {
-                    if (!two.KerningPairs.TryGetValue(keyValuePair.Key, out int value))
+                    if (!two.KerningPairs.TryGetValue(pair, out var value))
                     {
                         Assert.Fail("KerningPair not found.");
                     }
 
-                    Assert.AreEqual(keyValuePair.Value, value, "Amount incorrect.");
+                    Assert.AreEqual(amount, value, "Amount incorrect.");
                 }
             }
         }

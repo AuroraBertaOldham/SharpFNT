@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// Character.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// Character.cs                                                                                    *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using System.Collections.Generic;
 using System.IO;
@@ -15,53 +15,61 @@ namespace SharpFNT
         public const int SizeInBytes = 20;
 
         public int X { get; set; }
+
         public int Y { get; set; }
+
         public int Width { get; set; }
+
         public int Height { get; set; }
+
         public int XOffset { get; set; }
+
         public int YOffset { get; set; }
+
         public int XAdvance { get; set; }
+
         public int Page { get; set; }
+
         public Channel Channel { get; set; }
 
         public void WriteBinary(BinaryWriter binaryWriter, int id) 
         {
             binaryWriter.Write((uint)id);
-            binaryWriter.Write((ushort)this.X);
-            binaryWriter.Write((ushort)this.Y);
-            binaryWriter.Write((ushort)this.Width);
-            binaryWriter.Write((ushort)this.Height);
-            binaryWriter.Write((short)this.XOffset);
-            binaryWriter.Write((short)this.YOffset);
-            binaryWriter.Write((short)this.XAdvance);
-            binaryWriter.Write((byte)this.Page);
-            binaryWriter.Write((byte)this.Channel);
+            binaryWriter.Write((ushort)X);
+            binaryWriter.Write((ushort)Y);
+            binaryWriter.Write((ushort)Width);
+            binaryWriter.Write((ushort)Height);
+            binaryWriter.Write((short)XOffset);
+            binaryWriter.Write((short)YOffset);
+            binaryWriter.Write((short)XAdvance);
+            binaryWriter.Write((byte)Page);
+            binaryWriter.Write((byte)Channel);
         }
         public void WriteXML(XElement element, int id) 
         {
             element.SetAttributeValue("id", id);
-            element.SetAttributeValue("x", this.X);
-            element.SetAttributeValue("y", this.Y);
-            element.SetAttributeValue("width", this.Width);
-            element.SetAttributeValue("height", this.Height);
-            element.SetAttributeValue("xoffset", this.XOffset);
-            element.SetAttributeValue("yoffset", this.YOffset);
-            element.SetAttributeValue("xadvance", this.XAdvance);
-            element.SetAttributeValue("page", this.Page);
-            element.SetAttributeValue("chnl", (int)this.Channel);
+            element.SetAttributeValue("x", X);
+            element.SetAttributeValue("y", Y);
+            element.SetAttributeValue("width", Width);
+            element.SetAttributeValue("height", Height);
+            element.SetAttributeValue("xoffset", XOffset);
+            element.SetAttributeValue("yoffset", YOffset);
+            element.SetAttributeValue("xadvance", XAdvance);
+            element.SetAttributeValue("page", Page);
+            element.SetAttributeValue("chnl", (int)Channel);
         }
         public void WriteText(TextWriter textWriter, int id)
         {
             TextFormatUtility.WriteInt("id", id, textWriter);
-            TextFormatUtility.WriteInt("x", this.X, textWriter);
-            TextFormatUtility.WriteInt("y", this.Y, textWriter);
-            TextFormatUtility.WriteInt("width", this.Width, textWriter);
-            TextFormatUtility.WriteInt("height", this.Height, textWriter);
-            TextFormatUtility.WriteInt("xoffset", this.XOffset, textWriter);
-            TextFormatUtility.WriteInt("yoffset", this.YOffset, textWriter);
-            TextFormatUtility.WriteInt("xadvance", this.XAdvance, textWriter);
-            TextFormatUtility.WriteInt("page", this.Page, textWriter);
-            TextFormatUtility.WriteEnum("chnl", this.Channel, textWriter);
+            TextFormatUtility.WriteInt("x", X, textWriter);
+            TextFormatUtility.WriteInt("y", Y, textWriter);
+            TextFormatUtility.WriteInt("width", Width, textWriter);
+            TextFormatUtility.WriteInt("height", Height, textWriter);
+            TextFormatUtility.WriteInt("xoffset", XOffset, textWriter);
+            TextFormatUtility.WriteInt("yoffset", YOffset, textWriter);
+            TextFormatUtility.WriteInt("xadvance", XAdvance, textWriter);
+            TextFormatUtility.WriteInt("page", Page, textWriter);
+            TextFormatUtility.WriteEnum("chnl", Channel, textWriter);
         }
 
         public static Character ReadBinary(BinaryReader binaryReader, out int id)

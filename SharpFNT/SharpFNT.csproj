@@ -4,22 +4,28 @@
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Authors>Todd Berta-Oldham</Authors>
+    <Authors>Aurora Berta-Oldham</Authors>
     <Company></Company>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>SharpFNT is a C# library for reading and writing Angel Code bitmap fonts in binary, XML, and text.</Description>
-    <Version>1.1.0</Version>
-    <PackageLicenseUrl>https://github.com/ToddBertaOldham/SharpFNT/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/ToddBertaOldham/SharpFNT</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ToddBertaOldham/SharpFNT</RepositoryUrl>
-    <Copyright>Copyright © Todd Berta-Oldham 2018</Copyright>
+    <Version>1.1.1</Version>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/AuroraBertaOldham/SharpFNT</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AuroraBertaOldham/SharpFNT</RepositoryUrl>
+    <Copyright>Copyright © Aurora Berta-Oldham 2018-2020</Copyright>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Fixed a bug when writing text files without kerning pairs.
-- Fixed a bug when writing binary file pages.
-- Removed ID property from Character and Amount from KerningPair to avoid confusion when writing files. These are breaking changes.
-- Writing text files now writes to the TextWriter directly instead of a StringBuilder. This is a breaking change.
-- Other bug fixes and general improvements.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updated package links and copyright info.</PackageReleaseNotes>
     <PackageTags>fnt;bitmap;font;bmfont</PackageTags>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

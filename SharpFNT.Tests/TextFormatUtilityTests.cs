@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// TextFormatUtilityTests.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// TextFormatUtilityTests.cs                                                                       *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -18,7 +18,7 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadInvalidValue()
         {
-            List<string> segments = new List<string>
+            var segments = new List<string>
             {
                 "This is not a valid property.", "This is also not a valid property."
             };
@@ -30,7 +30,7 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(FormatException))]
         public void ReadInvalidBool()
         {
-            List<string> segments = new List<string>
+            var segments = new List<string>
             {
                 "test=2"
             };

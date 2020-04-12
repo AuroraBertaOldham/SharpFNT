@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// UtilityExtensions.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// UtilityExtensions.cs                                                                            *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using System;
 using System.IO;
@@ -18,6 +18,7 @@ namespace SharpFNT
             if (index < 0 || index > 7) throw new ArgumentOutOfRangeException(nameof(index));
             return (@byte & (1 << index)) != 0;
         }
+
         public static byte SetBit(this byte @byte, int index, bool set)
         {
             if (index < 0 || index > 7) throw new ArgumentOutOfRangeException(nameof(index));
@@ -32,11 +33,11 @@ namespace SharpFNT
 
         public static string ReadNullTerminatedString(this BinaryReader binaryReader)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             while (true)
             {
-                byte character = binaryReader.ReadByte();
+                var character = binaryReader.ReadByte();
 
                 if (character == 0)
                 {
@@ -48,11 +49,12 @@ namespace SharpFNT
 
             return stringBuilder.ToString();
         }
+
         public static void WriteNullTerminatedString(this BinaryWriter binaryWriter, string value)
         {
             if (value != null)
             {
-                foreach (char character in value)
+                foreach (var character in value)
                 {
                     binaryWriter.Write((byte)character);
                 }

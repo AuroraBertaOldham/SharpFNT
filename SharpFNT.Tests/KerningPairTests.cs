@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// KerningTests.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// KerningTests.cs                                                                                 *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,38 +14,38 @@ namespace SharpFNT.Tests
         [TestMethod]
         public void KerningPairToString()
         {
-            KerningPair kerningPair = new KerningPair(5, 2);
+            var kerningPair = new KerningPair(5, 2);
             Assert.AreEqual("First: 5, Second: 2", kerningPair.ToString());
         }
 
         [TestMethod]
         public void KerningPairEqualOp()
         {
-            KerningPair one = new KerningPair(6, 4);
-            KerningPair two = new KerningPair(6, 4);
+            var one = new KerningPair(6, 4);
+            var two = new KerningPair(6, 4);
             Assert.IsTrue(one == two);
         }
 
         [TestMethod]
         public void KerningPairInequalityOp()
         {
-            KerningPair one = new KerningPair(6, 4);
-            KerningPair two = new KerningPair(7, 3);
+            var one = new KerningPair(6, 4);
+            var two = new KerningPair(7, 3);
             Assert.IsTrue(one != two);
         }
 
         [TestMethod]
         public void KerningPairEqualNotKerningPair()
         {
-            object one = new object();
-            KerningPair two = new KerningPair(2, 4);
+            var one = new object();
+            var two = new KerningPair(2, 4);
             Assert.IsFalse(two.Equals(one));
         }
 
         [TestMethod]
         public void KerningPairEqualNull()
         {
-            KerningPair two = new KerningPair(2, 4);
+            var two = new KerningPair(2, 4);
             Assert.IsFalse(two.Equals(null));
         }
     }

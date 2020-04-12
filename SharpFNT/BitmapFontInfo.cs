@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// BitmapFontInfo.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// BitmapFontInfo.cs                                                                               *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using System;
 using System.Collections.Generic;
@@ -39,23 +39,23 @@ namespace SharpFNT
 
         public void WriteBinary(BinaryWriter binaryWriter)
         {
-            binaryWriter.Write(MinSizeInBytes + (this.Face?.Length ?? 0) + 1);
-            binaryWriter.Write((short)this.Size);
+            binaryWriter.Write(MinSizeInBytes + (Face?.Length ?? 0) + 1);
+            binaryWriter.Write((short)Size);
 
             byte bitField = 0;
 
-            bitField = bitField.SetBit(7, this.Smooth);
-            bitField = bitField.SetBit(6, this.Unicode);
-            bitField = bitField.SetBit(5, this.Italic);
-            bitField = bitField.SetBit(4, this.Bold);
+            bitField = bitField.SetBit(7, Smooth);
+            bitField = bitField.SetBit(6, Unicode);
+            bitField = bitField.SetBit(5, Italic);
+            bitField = bitField.SetBit(4, Bold);
 
             binaryWriter.Write(bitField);
 
             byte characterSetID = 0;
 
-            if (!string.IsNullOrEmpty(this.Charset))
+            if (!string.IsNullOrEmpty(Charset))
             {
-                if (!Enum.TryParse(this.Charset, true, out CharacterSet characterSet))
+                if (!Enum.TryParse(Charset, true, out CharacterSet characterSet))
                 {
                     throw new FormatException("Invalid character set.");
                 }
@@ -65,63 +65,63 @@ namespace SharpFNT
 
             binaryWriter.Write(characterSetID);
 
-            binaryWriter.Write((ushort)this.StretchHeight);
-            binaryWriter.Write((byte)this.SuperSamplingLevel);
+            binaryWriter.Write((ushort)StretchHeight);
+            binaryWriter.Write((byte)SuperSamplingLevel);
 
-            binaryWriter.Write((byte)this.PaddingUp);
-            binaryWriter.Write((byte)this.PaddingRight);
-            binaryWriter.Write((byte)this.PaddingDown);
-            binaryWriter.Write((byte)this.PaddingLeft);
+            binaryWriter.Write((byte)PaddingUp);
+            binaryWriter.Write((byte)PaddingRight);
+            binaryWriter.Write((byte)PaddingDown);
+            binaryWriter.Write((byte)PaddingLeft);
 
-            binaryWriter.Write((byte)this.SpacingHorizontal);
-            binaryWriter.Write((byte)this.SpacingVertical);
+            binaryWriter.Write((byte)SpacingHorizontal);
+            binaryWriter.Write((byte)SpacingVertical);
 
-            binaryWriter.Write((byte)this.Outline);
-            binaryWriter.WriteNullTerminatedString(this.Face);
+            binaryWriter.Write((byte)Outline);
+            binaryWriter.WriteNullTerminatedString(Face);
         }
         public void WriteXML(XElement element) 
         {
-            element.SetAttributeValue("face", this.Face ?? string.Empty);
-            element.SetAttributeValue("size", this.Size); 
-            element.SetAttributeValue("bold", Convert.ToInt32(this.Bold));
-            element.SetAttributeValue("italic", Convert.ToInt32(this.Italic));
+            element.SetAttributeValue("face", Face ?? string.Empty);
+            element.SetAttributeValue("size", Size); 
+            element.SetAttributeValue("bold", Convert.ToInt32(Bold));
+            element.SetAttributeValue("italic", Convert.ToInt32(Italic));
 
-            element.SetAttributeValue("charset", this.Charset ?? string.Empty);
+            element.SetAttributeValue("charset", Charset ?? string.Empty);
 
-            element.SetAttributeValue("unicode", Convert.ToInt32(this.Unicode));
-            element.SetAttributeValue("stretchH", this.StretchHeight);
-            element.SetAttributeValue("smooth", Convert.ToInt32(this.Smooth));
-            element.SetAttributeValue("aa", this.SuperSamplingLevel);
+            element.SetAttributeValue("unicode", Convert.ToInt32(Unicode));
+            element.SetAttributeValue("stretchH", StretchHeight);
+            element.SetAttributeValue("smooth", Convert.ToInt32(Smooth));
+            element.SetAttributeValue("aa", SuperSamplingLevel);
 
-            string padding = $"{this.PaddingUp},{this.PaddingRight},{this.PaddingDown},{this.PaddingLeft}";
+            var padding = $"{PaddingUp},{PaddingRight},{PaddingDown},{PaddingLeft}";
             element.SetAttributeValue("padding", padding);
 
-            string spacing = $"{this.SpacingHorizontal},{this.SpacingVertical}";
+            var spacing = $"{SpacingHorizontal},{SpacingVertical}";
             element.SetAttributeValue("spacing", spacing);
 
-            element.SetAttributeValue("outline", this.Outline);
+            element.SetAttributeValue("outline", Outline);
         }
         public void WriteText(TextWriter textWriter) 
         {
-            TextFormatUtility.WriteString("face", this.Face ?? string.Empty, textWriter);
-            TextFormatUtility.WriteInt("size", this.Size, textWriter);
-            TextFormatUtility.WriteBool("bold", this.Bold, textWriter);
-            TextFormatUtility.WriteBool("italic", this.Italic, textWriter);
+            TextFormatUtility.WriteString("face", Face ?? string.Empty, textWriter);
+            TextFormatUtility.WriteInt("size", Size, textWriter);
+            TextFormatUtility.WriteBool("bold", Bold, textWriter);
+            TextFormatUtility.WriteBool("italic", Italic, textWriter);
 
-            TextFormatUtility.WriteString("charset", this.Charset ?? string.Empty, textWriter);
+            TextFormatUtility.WriteString("charset", Charset ?? string.Empty, textWriter);
 
-            TextFormatUtility.WriteBool("unicode", this.Unicode, textWriter);
-            TextFormatUtility.WriteInt("stretchH", this.StretchHeight, textWriter);
-            TextFormatUtility.WriteBool("smooth", this.Smooth, textWriter);
-            TextFormatUtility.WriteInt("aa", this.SuperSamplingLevel, textWriter);
+            TextFormatUtility.WriteBool("unicode", Unicode, textWriter);
+            TextFormatUtility.WriteInt("stretchH", StretchHeight, textWriter);
+            TextFormatUtility.WriteBool("smooth", Smooth, textWriter);
+            TextFormatUtility.WriteInt("aa", SuperSamplingLevel, textWriter);
 
-            string padding = $"{this.PaddingUp},{this.PaddingRight},{this.PaddingDown},{this.PaddingLeft}";
+            var padding = $"{PaddingUp},{PaddingRight},{PaddingDown},{PaddingLeft}";
             TextFormatUtility.WriteValue("padding", padding, textWriter);
 
-            string spacing = $"{this.SpacingHorizontal},{this.SpacingVertical}";
+            var spacing = $"{SpacingHorizontal},{SpacingVertical}";
             TextFormatUtility.WriteValue("spacing", spacing, textWriter);
 
-            TextFormatUtility.WriteInt("outline", this.Outline, textWriter);
+            TextFormatUtility.WriteInt("outline", Outline, textWriter);
         }
 
         public static BitmapFontInfo ReadBinary(BinaryReader binaryReader)
@@ -131,18 +131,18 @@ namespace SharpFNT
                 throw new InvalidDataException("Invalid info block size.");
             }
 
-            BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
+            var bitmapFontInfo = new BitmapFontInfo();
 
             bitmapFontInfo.Size = binaryReader.ReadInt16();
 
-            byte bitField = binaryReader.ReadByte();
+            var bitField = binaryReader.ReadByte();
 
             bitmapFontInfo.Smooth = bitField.IsBitSet(7);
             bitmapFontInfo.Unicode = bitField.IsBitSet(6);
             bitmapFontInfo.Italic = bitField.IsBitSet(5);
             bitmapFontInfo.Bold = bitField.IsBitSet(4);
 
-            CharacterSet characterSet = (CharacterSet)binaryReader.ReadByte();
+            var characterSet = (CharacterSet)binaryReader.ReadByte();
             bitmapFontInfo.Charset = characterSet.ToString().ToUpper();
 
             bitmapFontInfo.StretchHeight = binaryReader.ReadUInt16();
@@ -163,7 +163,7 @@ namespace SharpFNT
         }
         public static BitmapFontInfo ReadXML(XElement element)
         {
-            BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
+            var bitmapFontInfo = new BitmapFontInfo();
 
             bitmapFontInfo.Face = (string)element.Attribute("face") ?? string.Empty;
             bitmapFontInfo.Size = (int)element.Attribute("size");
@@ -177,13 +177,13 @@ namespace SharpFNT
             bitmapFontInfo.Smooth = (bool)element.Attribute("smooth");
             bitmapFontInfo.SuperSamplingLevel = (int)element.Attribute("aa");
             
-            string[] padding = ((string)element.Attribute("padding")).Split(',');
+            var padding = ((string)element.Attribute("padding")).Split(',');
             bitmapFontInfo.PaddingUp = int.Parse(padding[0]);
             bitmapFontInfo.PaddingRight = int.Parse(padding[1]);
             bitmapFontInfo.PaddingDown = int.Parse(padding[2]);
             bitmapFontInfo.PaddingLeft = int.Parse(padding[3]);
 
-            string[] spacing = ((string)element.Attribute("spacing")).Split(',');
+            var spacing = ((string)element.Attribute("spacing")).Split(',');
             bitmapFontInfo.SpacingHorizontal = int.Parse(spacing[0]);
             bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
 
@@ -193,7 +193,7 @@ namespace SharpFNT
         }
         public static BitmapFontInfo ReadText(IReadOnlyList<string> lineSegments) 
         {
-            BitmapFontInfo bitmapFontInfo = new BitmapFontInfo();
+            var bitmapFontInfo = new BitmapFontInfo();
 
             bitmapFontInfo.Face = TextFormatUtility.ReadString("face", lineSegments);
             bitmapFontInfo.Size = TextFormatUtility.ReadInt("size", lineSegments);
@@ -207,13 +207,13 @@ namespace SharpFNT
             bitmapFontInfo.Smooth = TextFormatUtility.ReadBool("smooth", lineSegments);
             bitmapFontInfo.SuperSamplingLevel = TextFormatUtility.ReadInt("aa", lineSegments);
 
-            string[] padding = TextFormatUtility.ReadValue("padding", lineSegments).Split(',');
+            var padding = TextFormatUtility.ReadValue("padding", lineSegments).Split(',');
             bitmapFontInfo.PaddingUp = int.Parse(padding[0]);
             bitmapFontInfo.PaddingRight = int.Parse(padding[1]);
             bitmapFontInfo.PaddingDown = int.Parse(padding[2]);
             bitmapFontInfo.PaddingLeft = int.Parse(padding[3]);
 
-            string[] spacing = TextFormatUtility.ReadValue("spacing", lineSegments).Split(',');
+            var spacing = TextFormatUtility.ReadValue("spacing", lineSegments).Split(',');
             bitmapFontInfo.SpacingHorizontal = int.Parse(spacing[0]);
             bitmapFontInfo.SpacingVertical = int.Parse(spacing[1]);
 

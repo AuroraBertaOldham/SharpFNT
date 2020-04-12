@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// BitmapFont.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// BitmapFont.cs                                                                                   *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using System;
 using System.Collections.Generic;
@@ -37,15 +37,15 @@ namespace SharpFNT
 
         public void Save(string path, FormatHint formatHint)
         {
-            using (FileStream fileStream = File.Create(path))
+            using (var fileStream = File.Create(path))
             {
                 switch (formatHint)
                 {
                     case FormatHint.Binary:
                     {
-                        using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
+                        using (var binaryWriter = new BinaryWriter(fileStream))
                         {
-                            this.WriteBinary(binaryWriter);
+                            WriteBinary(binaryWriter);
                         }
 
                         break;
@@ -53,15 +53,15 @@ namespace SharpFNT
 
                     case FormatHint.XML:
                     {
-                        XmlWriterSettings settings = new XmlWriterSettings
+                        var settings = new XmlWriterSettings
                         {
                             Indent = true,
                             IndentChars = "  "
                         };
 
-                        using (XmlWriter xmlWriter = XmlWriter.Create(fileStream, settings))
+                        using (var xmlWriter = XmlWriter.Create(fileStream, settings))
                         {
-                            this.WriteXML(xmlWriter);
+                            WriteXML(xmlWriter);
                         }
 
                         break;
@@ -69,9 +69,9 @@ namespace SharpFNT
 
                     case FormatHint.Text:
                     {
-                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        using (var streamWriter = new StreamWriter(fileStream))
                         {
-                            this.WriteText(streamWriter);
+                            WriteText(streamWriter);
                         }
 
                         break;
@@ -90,27 +90,27 @@ namespace SharpFNT
             binaryWriter.Write(MagicThree);
             binaryWriter.Write((byte)ImplementedVersion);
 
-            if (this.Info != null)
+            if (Info != null)
             {
                 binaryWriter.Write((byte)BlockID.Info);
-                this.Info.WriteBinary(binaryWriter);
+                Info.WriteBinary(binaryWriter);
             }
 
-            if (this.Common != null)
+            if (Common != null)
             {
                 binaryWriter.Write((byte)BlockID.Common);
-                this.Common.WriteBinary(binaryWriter, this.Pages.Count);
+                Common.WriteBinary(binaryWriter, Pages.Count);
             }
 
-            if (this.Pages != null)
+            if (Pages != null)
             {
                 binaryWriter.Write((byte)BlockID.Pages);
-                binaryWriter.Write(this.Pages.Values.Sum(page => page.Length + 1));
+                binaryWriter.Write(Pages.Values.Sum(page => page.Length + 1));
 
                 // Unlike the XML and text formats, the binary format requires page IDs to be consecutive and zero based. 
                 
-                int index = 0;
-                foreach (KeyValuePair<int, string> keyValuePair in this.Pages.OrderBy(pair => pair.Key))
+                var index = 0;
+                foreach (var keyValuePair in Pages.OrderBy(pair => pair.Key))
                 {
                     if (keyValuePair.Key != index) throw new InvalidDataException("The binary format requires that page IDs be consecutive and zero based.");
                     binaryWriter.WriteNullTerminatedString(keyValuePair.Value);
@@ -118,23 +118,23 @@ namespace SharpFNT
                 }
             }
 
-            if (this.Characters != null)
+            if (Characters != null)
             {
                 binaryWriter.Write((byte)BlockID.Characters);
-                binaryWriter.Write(this.Characters.Values.Count * Character.SizeInBytes);
+                binaryWriter.Write(Characters.Values.Count * Character.SizeInBytes);
 
-                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
+                foreach (var keyValuePair in Characters)
                 {
                     keyValuePair.Value.WriteBinary(binaryWriter, keyValuePair.Key);
                 }
             }
 
-            if (this.KerningPairs != null && this.KerningPairs.Count > 0)
+            if (KerningPairs != null && KerningPairs.Count > 0)
             {
                 binaryWriter.Write((byte)BlockID.KerningPairs);
-                binaryWriter.Write(this.KerningPairs.Keys.Count * KerningPair.SizeInBytes);
+                binaryWriter.Write(KerningPairs.Keys.Count * KerningPair.SizeInBytes);
 
-                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
+                foreach (var keyValuePair in KerningPairs)
                 {
                     keyValuePair.Key.WriteBinary(binaryWriter, keyValuePair.Value);
                 }
@@ -142,38 +142,38 @@ namespace SharpFNT
         }
         public void WriteXML(XmlWriter xmlWriter) 
         {
-            XDocument document = new XDocument();
+            var document = new XDocument();
 
-            XElement fontElement = new XElement("font");
+            var fontElement = new XElement("font");
             document.Add(fontElement);
 
             // Info
 
-            if (this.Info != null)
+            if (Info != null)
             {
-                XElement infoElement = new XElement("info");
-                this.Info.WriteXML(infoElement);
+                var infoElement = new XElement("info");
+                Info.WriteXML(infoElement);
                 fontElement.Add(infoElement);
             }
 
             // Common
 
-            if (this.Common != null)
+            if (Common != null)
             {
-                XElement commonElement = new XElement("common");
-                this.Common.WriteXML(commonElement, this.Pages.Count);
+                var commonElement = new XElement("common");
+                Common.WriteXML(commonElement, Pages.Count);
                 fontElement.Add(commonElement);
             }
 
             // Pages
 
-            if (this.Pages != null)
+            if (Pages != null)
             {
-                XElement pagesElement = new XElement("pages");
+                var pagesElement = new XElement("pages");
 
-                foreach (KeyValuePair<int, string> page in this.Pages)
+                foreach (var page in Pages)
                 {
-                    XElement pageElement = new XElement("page");
+                    var pageElement = new XElement("page");
                     pageElement.SetAttributeValue("id", page.Key);
                     pageElement.SetAttributeValue("file", page.Value);
                     pagesElement.Add(pageElement);
@@ -184,14 +184,14 @@ namespace SharpFNT
 
             // Characters
 
-            if (this.Characters != null)
+            if (Characters != null)
             {
-                XElement charactersElement = new XElement("chars");
-                charactersElement.SetAttributeValue("count", this.Characters.Count);
+                var charactersElement = new XElement("chars");
+                charactersElement.SetAttributeValue("count", Characters.Count);
 
-                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
+                foreach (var keyValuePair in Characters)
                 {
-                    XElement characterElement = new XElement("char");
+                    var characterElement = new XElement("char");
                     keyValuePair.Value.WriteXML(characterElement, keyValuePair.Key);
                     charactersElement.Add(characterElement);
                 }
@@ -201,14 +201,14 @@ namespace SharpFNT
 
             // Kernings
 
-            if (this.KerningPairs != null && this.KerningPairs.Count > 0)
+            if (KerningPairs != null && KerningPairs.Count > 0)
             {
-                XElement kerningsElement = new XElement("kernings");
-                kerningsElement.SetAttributeValue("count", this.KerningPairs.Count);
+                var kerningsElement = new XElement("kernings");
+                kerningsElement.SetAttributeValue("count", KerningPairs.Count);
 
-                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
+                foreach (var keyValuePair in KerningPairs)
                 {
-                    XElement kerningElement = new XElement("kerning");
+                    var kerningElement = new XElement("kerning");
                     keyValuePair.Key.WriteXML(kerningElement, keyValuePair.Value);
                     kerningsElement.Add(kerningElement);
                 }
@@ -222,27 +222,27 @@ namespace SharpFNT
         {
             // Info
 
-            if (this.Info != null)
+            if (Info != null)
             {
                 textWriter.Write("info");
-                this.Info.WriteText(textWriter);
+                Info.WriteText(textWriter);
                 textWriter.WriteLine();
             }
 
             // Common
 
-            if (this.Common != null)
+            if (Common != null)
             {
                 textWriter.Write("common");
-                this.Common.WriteText(textWriter, this.Pages.Count);
+                Common.WriteText(textWriter, Pages.Count);
                 textWriter.WriteLine();
             }
 
             // Pages
 
-            if (this.Pages != null)
+            if (Pages != null)
             {
-                foreach (KeyValuePair<int, string> page in this.Pages)
+                foreach (var page in Pages)
                 {
                     textWriter.Write("page");
                     TextFormatUtility.WriteInt("id", page.Key, textWriter);
@@ -253,13 +253,13 @@ namespace SharpFNT
 
             // Characters
 
-            if (this.Characters != null)
+            if (Characters != null)
             {
                 textWriter.Write("chars");
-                TextFormatUtility.WriteInt("count", this.Characters.Count, textWriter);
+                TextFormatUtility.WriteInt("count", Characters.Count, textWriter);
                 textWriter.WriteLine();
 
-                foreach (KeyValuePair<int, Character> keyValuePair in this.Characters)
+                foreach (var keyValuePair in Characters)
                 {
                     textWriter.Write("char");
                     keyValuePair.Value.WriteText(textWriter, keyValuePair.Key);
@@ -270,13 +270,13 @@ namespace SharpFNT
 
             // Kernings
 
-            if (this.KerningPairs != null && this.KerningPairs.Count > 0)
+            if (KerningPairs != null && KerningPairs.Count > 0)
             {
                 textWriter.Write("kernings");
-                TextFormatUtility.WriteInt("count", this.KerningPairs.Count, textWriter);
+                TextFormatUtility.WriteInt("count", KerningPairs.Count, textWriter);
                 textWriter.WriteLine();
 
-                foreach (KeyValuePair<KerningPair, int> keyValuePair in this.KerningPairs)
+                foreach (var keyValuePair in KerningPairs)
                 {
                     textWriter.Write("kerning");
                     keyValuePair.Key.WriteText(textWriter, keyValuePair.Value);
@@ -287,28 +287,28 @@ namespace SharpFNT
 
         public int GetKerningAmount(char left, char right)
         {
-            if (this.KerningPairs == null)
+            if (KerningPairs == null)
             {
                 return 0;
             }
 
-            this.KerningPairs.TryGetValue(new KerningPair(left, right), out int kerningValue);
+            KerningPairs.TryGetValue(new KerningPair(left, right), out var kerningValue);
 
             return kerningValue;
         }
         public Character GetCharacter(char character, bool tryInvalid = true)
         {
-            if (this.Characters == null)
+            if (Characters == null)
             {
                 return null;
             }
 
-            if (this.Characters.TryGetValue(character, out Character result))
+            if (Characters.TryGetValue(character, out var result))
             {
                 return result;
             }
 
-            if (tryInvalid && this.Characters.TryGetValue(-1, out result))
+            if (tryInvalid && Characters.TryGetValue(-1, out result))
             {
                 return result;
             }
@@ -318,11 +318,11 @@ namespace SharpFNT
 
         public static BitmapFont ReadBinary(BinaryReader binaryReader)
         {
-            BitmapFont bitmapFont = new BitmapFont();
+            var bitmapFont = new BitmapFont();
 
-            byte magicOne = binaryReader.ReadByte();
-            byte magicTwo = binaryReader.ReadByte();
-            byte magicThree = binaryReader.ReadByte();
+            var magicOne = binaryReader.ReadByte();
+            var magicTwo = binaryReader.ReadByte();
+            var magicThree = binaryReader.ReadByte();
 
             if (magicOne != MagicOne || magicTwo != MagicTwo || magicThree != MagicThree)
             {
@@ -334,11 +334,11 @@ namespace SharpFNT
                 throw new InvalidDataException("The version specified is different from the implemented version.");
             }
 
-            int pageCount = 32;
+            var pageCount = 32;
 
             while (binaryReader.PeekChar() != -1)
             {
-                BlockID blockID = (BlockID)binaryReader.ReadByte();
+                var blockID = (BlockID)binaryReader.ReadByte();
 
                 switch (blockID)
                 {
@@ -358,7 +358,7 @@ namespace SharpFNT
 
                         bitmapFont.Pages = new Dictionary<int, string>(pageCount);
 
-                        for (int i = 0; i < pageCount; i++)
+                        for (var i = 0; i < pageCount; i++)
                         {
                             bitmapFont.Pages[i] = binaryReader.ReadNullTerminatedString();
                         }
@@ -367,20 +367,20 @@ namespace SharpFNT
                     }
                     case BlockID.Characters:
                     {
-                        int characterBlockSize = binaryReader.ReadInt32();
+                        var characterBlockSize = binaryReader.ReadInt32();
 
                         if (characterBlockSize % Character.SizeInBytes != 0)
                         {
                             throw new InvalidDataException("Invalid character block size.");
                         }
 
-                        int characterCount = characterBlockSize / Character.SizeInBytes;
+                        var characterCount = characterBlockSize / Character.SizeInBytes;
 
                         bitmapFont.Characters = new Dictionary<int, Character>(characterCount);
 
-                        for (int i = 0; i < characterCount; i++)
+                        for (var i = 0; i < characterCount; i++)
                         {
-                            Character character = Character.ReadBinary(binaryReader, out int id);
+                            var character = Character.ReadBinary(binaryReader, out var id);
                             bitmapFont.Characters[id] = character;
                         }
 
@@ -388,20 +388,20 @@ namespace SharpFNT
                     }
                     case BlockID.KerningPairs:
                     {
-                        int kerningBlockSize = binaryReader.ReadInt32();
+                        var kerningBlockSize = binaryReader.ReadInt32();
 
                         if (kerningBlockSize % KerningPair.SizeInBytes != 0)
                         {
                             throw new InvalidDataException("Invalid kerning block size.");
                         }
 
-                        int kerningCount = kerningBlockSize / KerningPair.SizeInBytes;
+                        var kerningCount = kerningBlockSize / KerningPair.SizeInBytes;
 
                         bitmapFont.KerningPairs = new Dictionary<KerningPair, int>(kerningCount);
 
-                        for (int i = 0; i < kerningCount; i++)
+                        for (var i = 0; i < kerningCount; i++)
                         {
-                            KerningPair kerningPair = KerningPair.ReadBinary(binaryReader, out int amount);
+                            var kerningPair = KerningPair.ReadBinary(binaryReader, out var amount);
                             if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                             bitmapFont.KerningPairs[kerningPair] = amount;
                         }
@@ -419,11 +419,11 @@ namespace SharpFNT
         }
         public static BitmapFont ReadXML(TextReader textReader) 
         {
-            BitmapFont bitmapFont = new BitmapFont();
+            var bitmapFont = new BitmapFont();
 
-            XDocument document = XDocument.Load(textReader);
+            var document = XDocument.Load(textReader);
 
-            XElement fontElement = document.Element("font");
+            var fontElement = document.Element("font");
 
             if (fontElement == null)
             {
@@ -432,7 +432,7 @@ namespace SharpFNT
 
             // Info
 
-            XElement infoElement = fontElement.Element("info");
+            var infoElement = fontElement.Element("info");
             if (infoElement != null)
             {
                 bitmapFont.Info = BitmapFontInfo.ReadXML(infoElement);
@@ -440,9 +440,9 @@ namespace SharpFNT
 
             // Common
 
-            int pages = 32;
+            var pages = 32;
 
-            XElement commonElement = fontElement.Element("common");
+            var commonElement = fontElement.Element("common");
             if (commonElement != null)
             {
                 bitmapFont.Common = BitmapFontCommon.ReadXML(commonElement, out pages);
@@ -450,47 +450,47 @@ namespace SharpFNT
 
             // Pages
 
-            XElement pagesElement = fontElement.Element("pages");
+            var pagesElement = fontElement.Element("pages");
             if (pagesElement != null)
             {
                 bitmapFont.Pages = new Dictionary<int, string>(pages);
 
-                foreach (XElement pageElement in pagesElement.Elements("page"))
+                foreach (var pageElement in pagesElement.Elements("page"))
                 {
-                    int id = (int)pageElement.Attribute("id");
-                    string name = (string)pageElement.Attribute("file");
+                    var id = (int)pageElement.Attribute("id");
+                    var name = (string)pageElement.Attribute("file");
                     bitmapFont.Pages[id] = name;
                 }
             }
 
             // Characters
 
-            XElement charactersElement = fontElement.Element("chars");
+            var charactersElement = fontElement.Element("chars");
             if (charactersElement != null)
             {
-                int count = (int)charactersElement.Attribute("count");
+                var count = (int)charactersElement.Attribute("count");
 
                 bitmapFont.Characters = new Dictionary<int, Character>(count);
 
-                foreach (XElement characterElement in charactersElement.Elements("char"))
+                foreach (var characterElement in charactersElement.Elements("char"))
                 {
-                    Character character = Character.ReadXML(characterElement, out int id);
+                    var character = Character.ReadXML(characterElement, out var id);
                     bitmapFont.Characters[id] = character;
                 }
             }
 
             // Kernings
              
-            XElement kerningsElement = fontElement.Element("kernings");
+            var kerningsElement = fontElement.Element("kernings");
             if (kerningsElement != null)
             {
-                int count = (int)kerningsElement.Attribute("count");
+                var count = (int)kerningsElement.Attribute("count");
 
                 bitmapFont.KerningPairs = new Dictionary<KerningPair, int>(count);
 
-                foreach (XElement kerningElement in kerningsElement.Elements("kerning"))
+                foreach (var kerningElement in kerningsElement.Elements("kerning"))
                 {
-                    KerningPair kerningPair = KerningPair.ReadXML(kerningElement, out int amount);
+                    var kerningPair = KerningPair.ReadXML(kerningElement, out var amount);
                     if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                     bitmapFont.KerningPairs[kerningPair] = amount;
                 }
@@ -500,11 +500,11 @@ namespace SharpFNT
         }
         public static BitmapFont ReadText(TextReader textReader) 
         {
-            BitmapFont bitmapFont = new BitmapFont();
+            var bitmapFont = new BitmapFont();
 
             while (textReader.Peek() != -1)
             {
-                IReadOnlyList<string> lineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
+                var lineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
 
                 switch (lineSegments[0])
                 {
@@ -513,49 +513,45 @@ namespace SharpFNT
                         bitmapFont.Info = BitmapFontInfo.ReadText(lineSegments);
                         break;
                     }
-
                     case "common":
                     {
-                        bitmapFont.Common = BitmapFontCommon.ReadText(lineSegments, out int pageCount);
+                        bitmapFont.Common = BitmapFontCommon.ReadText(lineSegments, out var pageCount);
                         bitmapFont.Pages = new Dictionary<int, string>(pageCount);
                         break;
                     }
-
                     case "page":
                     {
                         bitmapFont.Pages = bitmapFont.Pages ?? new Dictionary<int, string>(32);
-                        int id = TextFormatUtility.ReadInt("id", lineSegments);
-                        string file = TextFormatUtility.ReadString("file", lineSegments);
+                        var id = TextFormatUtility.ReadInt("id", lineSegments);
+                        var file = TextFormatUtility.ReadString("file", lineSegments);
                         bitmapFont.Pages[id] = file;
                         break;
                     }
-
                     case "chars":
                     {
-                        int count = TextFormatUtility.ReadInt("count", lineSegments);
+                        var count = TextFormatUtility.ReadInt("count", lineSegments);
 
                         bitmapFont.Characters = new Dictionary<int, Character>(count);
 
-                        for (int i = 0; i < count; i++)
+                        for (var i = 0; i < count; i++)
                         {
-                            IReadOnlyList<string> characterLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
-                            Character character = Character.ReadText(characterLineSegments, out int id);
+                            var characterLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
+                            var character = Character.ReadText(characterLineSegments, out var id);
                             bitmapFont.Characters[id] = character;
                         }
 
                         break;
                     }
-
                     case "kernings":
                     {
-                        int count = TextFormatUtility.ReadInt("count", lineSegments);
+                        var count = TextFormatUtility.ReadInt("count", lineSegments);
 
                         bitmapFont.KerningPairs = new Dictionary<KerningPair, int>(count);
 
-                        for (int i = 0; i < count; i++)
+                        for (var i = 0; i < count; i++)
                         {
-                            IReadOnlyList<string> kerningLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
-                            KerningPair kerningPair = KerningPair.ReadText(kerningLineSegments, out int amount);
+                            var kerningLineSegments = TextFormatUtility.GetSegments(textReader.ReadLine());
+                            var kerningPair = KerningPair.ReadText(kerningLineSegments, out var amount);
                             if (bitmapFont.KerningPairs.ContainsKey(kerningPair)) continue;
                             bitmapFont.KerningPairs[kerningPair] = amount;
                         }
@@ -573,40 +569,25 @@ namespace SharpFNT
             switch (formatHint)
             {
                 case FormatHint.Binary:
-                {
-                    using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen))
-                    {
+                    using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen))
                         return ReadBinary(binaryReader);
-                    }
-                }
-
                 case FormatHint.XML:
-                {
-                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
-                    {
+                    using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
                         return ReadXML(streamReader);
-                    }
-                }
-
                 case FormatHint.Text:
-                {
-                    using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
-                    {
+                    using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
                         return ReadText(streamReader);
-                    }
-                }
-
                 default:
                     throw new ArgumentOutOfRangeException(nameof(formatHint), formatHint, null);
             }
         }
         public static BitmapFont FromStream(Stream stream, bool leaveOpen)
         {
-            using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
+            using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
             {
                 if (binaryReader.PeekChar() == MagicOne)
                 {
-                    BitmapFont bitmapFont = ReadBinary(binaryReader);
+                    var bitmapFont = ReadBinary(binaryReader);
                     if (!leaveOpen)
                     {
                         stream.Dispose();
@@ -615,7 +596,7 @@ namespace SharpFNT
                 }
             }
 
-            using (StreamReader streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen))
             {
                 return streamReader.Peek() == '<' ? ReadXML(streamReader) : ReadText(streamReader);
             }
@@ -623,14 +604,14 @@ namespace SharpFNT
 
         public static BitmapFont FromFile(string path, FormatHint formatHint)
         {
-            using (FileStream fileStream = File.OpenRead(path))
+            using (var fileStream = File.OpenRead(path))
             {
                 return FromStream(fileStream, formatHint, true);
             }
         }
         public static BitmapFont FromFile(string path)
         {
-            using (FileStream fileStream = File.OpenRead(path))
+            using (var fileStream = File.OpenRead(path))
             {
                 return FromStream(fileStream, true);
             }

@@ -1,8 +1,8 @@
-// ****************************************************************************
-// TextFormatUtility.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+//**************************************************************************************************
+// TextFormatUtility.cs                                                                            *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using System;
 using System.Collections.Generic;
@@ -15,15 +15,15 @@ namespace SharpFNT
     {
         public static IReadOnlyList<string> GetSegments(string line)
         {
-            bool ignoreWhiteSpace = false;
-            List<string> segments = new List<string>(16);
-            StringBuilder stringBuilder = new StringBuilder(16);
+            var ignoreWhiteSpace = false;
+            var segments = new List<string>(16);
+            var stringBuilder = new StringBuilder(16);
 
-            for (int i = 0; i < line.Length; i++)
+            for (var i = 0; i < line.Length; i++)
             {
-                char character = line[i];
+                var character = line[i];
 
-                bool endSegment = character == ' ' && !ignoreWhiteSpace;
+                var endSegment = character == ' ' && !ignoreWhiteSpace;
 
                 if (!endSegment)
                 {
@@ -49,9 +49,9 @@ namespace SharpFNT
 
         public static string ReadValue(string propertyName, IReadOnlyList<string> segments)
         {
-            foreach (string segment in segments)
+            foreach (var segment in segments)
             {
-                int equalsSign = segment.IndexOf('=');
+                var equalsSign = segment.IndexOf('=');
 
                 if (equalsSign != propertyName.Length) continue;
 
@@ -65,7 +65,7 @@ namespace SharpFNT
         }
         public static bool ReadBool(string propertyName, IReadOnlyList<string> segments) 
         {
-            string value = ReadValue(propertyName, segments);
+            var value = ReadValue(propertyName, segments);
 
             if (value == "1") 
             {
@@ -81,7 +81,7 @@ namespace SharpFNT
         }
         public static int ReadInt(string propertyName, IReadOnlyList<string> segments) 
         {
-            string value = ReadValue(propertyName, segments);
+            var value = ReadValue(propertyName, segments);
             return int.Parse(value);
         }
         public static string ReadString(string propertyName, IReadOnlyList<string> segments)
@@ -90,7 +90,7 @@ namespace SharpFNT
         }
         public static T ReadEnum<T>(string propertyName, IReadOnlyList<string> segments) 
         {
-            int value = ReadInt(propertyName, segments);
+            var value = ReadInt(propertyName, segments);
             return (T)Enum.ToObject(typeof(T), value);
         }
 

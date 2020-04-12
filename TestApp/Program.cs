@@ -1,13 +1,11 @@
-﻿// ****************************************************************************
-// Program.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// Program.cs                                                                                      *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using SharpFNT;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace TestApp
 {
@@ -18,9 +16,9 @@ namespace TestApp
             Console.WriteLine("SharpFNT Test App");
             Console.WriteLine("This program can display information from three different bitmap fonts.");
 
-            BitmapFont binaryFont = BitmapFont.FromFile("Binary.fnt");
-            BitmapFont xmlFont = BitmapFont.FromFile("XML.fnt");
-            BitmapFont textFont = BitmapFont.FromFile("Text.fnt");
+            var binaryFont = BitmapFont.FromFile("Binary.fnt");
+            var xmlFont = BitmapFont.FromFile("XML.fnt");
+            var textFont = BitmapFont.FromFile("Text.fnt");
 
             while (true)
             {
@@ -28,7 +26,7 @@ namespace TestApp
 
                 BitmapFont bitmapFont;
 
-                ConsoleKey consoleKey = Console.ReadKey().Key;
+                var consoleKey = Console.ReadKey().Key;
                 Console.WriteLine();
 
                 switch (consoleKey)
@@ -110,7 +108,7 @@ namespace TestApp
             }
 
             Console.WriteLine("Pages Count: {0}", bitmapFont.Pages.Count);
-            foreach (KeyValuePair<int, string> page in bitmapFont.Pages)
+            foreach (var page in bitmapFont.Pages)
             {
                 Console.WriteLine("ID: {0}", page.Key);
                 Console.WriteLine("File: {0}", page.Value);
@@ -125,7 +123,7 @@ namespace TestApp
             }
 
             Console.WriteLine("Characters Count: {0}", bitmapFont.Characters.Count);
-            foreach (KeyValuePair<int, Character> character in bitmapFont.Characters)
+            foreach (var character in bitmapFont.Characters)
             {
                 PrintPropertyValues(character.Value);
             }
@@ -139,7 +137,7 @@ namespace TestApp
             }
 
             Console.WriteLine("Kerning Pairs Count: {0}", bitmapFont.KerningPairs.Count);
-            foreach (KeyValuePair<KerningPair, int> kerningPair in bitmapFont.KerningPairs)
+            foreach (var kerningPair in bitmapFont.KerningPairs)
             {
                 PrintPropertyValues(kerningPair.Key);
             }
@@ -147,8 +145,8 @@ namespace TestApp
 
         private static void PrintPropertyValues(object @object)
         {
-            Type type = @object.GetType();
-            foreach (PropertyInfo propertyInfo in type.GetProperties())
+            var type = @object.GetType();
+            foreach (var propertyInfo in type.GetProperties())
             {
                 Console.WriteLine("{0}: {1}", propertyInfo.Name, propertyInfo.GetValue(@object));
             }

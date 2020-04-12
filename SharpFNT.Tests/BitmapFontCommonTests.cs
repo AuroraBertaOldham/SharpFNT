@@ -1,8 +1,8 @@
-﻿// ****************************************************************************
-// BitmapFontCommonTests.cs
-// Copyright 2018 Todd Berta-Oldham
-// This code is licensed under MIT.
-// ****************************************************************************
+﻿//**************************************************************************************************
+// BitmapFontCommonTests.cs                                                                        *
+// Copyright (c) 2018-2020 Aurora Berta-Oldham                                                     *
+// This code is made available under the MIT License.                                              *
+//**************************************************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
@@ -17,9 +17,9 @@ namespace SharpFNT.Tests
         [ExpectedException(typeof(InvalidDataException))]
         public void ReadBinaryWrongBlockSize()
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
+                using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
                 {
                     binaryWriter.Write(8);
                     binaryWriter.Write(2);
@@ -28,9 +28,9 @@ namespace SharpFNT.Tests
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                using (BinaryReader binaryReader = new BinaryReader(memoryStream, Encoding.UTF8, true))
+                using (var binaryReader = new BinaryReader(memoryStream, Encoding.UTF8, true))
                 {
-                    BitmapFontCommon.ReadBinary(binaryReader, out int _);
+                    BitmapFontCommon.ReadBinary(binaryReader, out _);
                 }
             }
         }

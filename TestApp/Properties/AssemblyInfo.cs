@@ -1,6 +1,5 @@
 ﻿using System.Resources;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -11,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TestApp")]
-[assembly: AssemblyCopyright("Copyright © Todd Berta-Oldham 2018")]
+[assembly: AssemblyCopyright("Copyright © Aurora Berta-Oldham 2018-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
