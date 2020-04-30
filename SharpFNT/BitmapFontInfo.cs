@@ -39,7 +39,7 @@ namespace SharpFNT
 
         public void WriteBinary(BinaryWriter binaryWriter)
         {
-            binaryWriter.Write(MinSizeInBytes + (Face?.Length ?? 0) + 1);
+            binaryWriter.Write(MinSizeInBytes + (Face?.Length ?? 0));
             binaryWriter.Write((short)Size);
 
             byte bitField = 0;
