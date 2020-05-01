@@ -8,16 +8,16 @@
     <Company></Company>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>SharpFNT is a C# library for reading and writing Angel Code bitmap fonts in binary, XML, and text.</Description>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/AuroraBertaOldham/SharpFNT</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AuroraBertaOldham/SharpFNT</RepositoryUrl>
     <Copyright>Copyright © Aurora Berta-Oldham 2018-2020</Copyright>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Updated package links and copyright info.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixed a bug when writing info block size for the binary format. Thanks to Michael Belyaev (@usr-sse2) for the contribution.</PackageReleaseNotes>
     <PackageTags>fnt;bitmap;font;bmfont</PackageTags>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <FileVersion>1.1.2.0</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 

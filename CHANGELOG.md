@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2
+* Fixed a bug when writing info block size for the binary format. Thanks to [Michael Belyaev (@usr-sse2)](https://github.com/usr-sse2) for the contribution ([PR #2](https://github.com/AuroraBertaOldham/SharpFNT/pull/2)).
+
 ## 1.1.1
 * Updated package links and copyright info.
 
