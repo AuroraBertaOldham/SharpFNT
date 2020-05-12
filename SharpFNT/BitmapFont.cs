@@ -334,7 +334,7 @@ namespace SharpFNT
                 throw new InvalidDataException("The version specified is different from the implemented version.");
             }
 
-            var pageCount = 32;
+            var pageCount = 0;
 
             while (binaryReader.PeekChar() != -1)
             {
@@ -440,7 +440,7 @@ namespace SharpFNT
 
             // Common
 
-            var pages = 32;
+            var pages = 0;
 
             var commonElement = fontElement.Element("common");
             if (commonElement != null)
@@ -457,7 +457,7 @@ namespace SharpFNT
 
                 foreach (var pageElement in pagesElement.Elements("page"))
                 {
-                    var id = (int)pageElement.Attribute("id");
+                    var id = (int?)pageElement.Attribute("id") ?? 0;
                     var name = (string)pageElement.Attribute("file");
                     bitmapFont.Pages[id] = name;
                 }
@@ -468,7 +468,7 @@ namespace SharpFNT
             var charactersElement = fontElement.Element("chars");
             if (charactersElement != null)
             {
-                var count = (int)charactersElement.Attribute("count");
+                var count = (int?)charactersElement.Attribute("count") ?? 0;
 
                 bitmapFont.Characters = new Dictionary<int, Character>(count);
 
@@ -484,7 +484,7 @@ namespace SharpFNT
             var kerningsElement = fontElement.Element("kernings");
             if (kerningsElement != null)
             {
-                var count = (int)kerningsElement.Attribute("count");
+                var count = (int?)kerningsElement.Attribute("count") ?? 0;
 
                 bitmapFont.KerningPairs = new Dictionary<KerningPair, int>(count);
 
@@ -521,7 +521,7 @@ namespace SharpFNT
                     }
                     case "page":
                     {
-                        bitmapFont.Pages = bitmapFont.Pages ?? new Dictionary<int, string>(32);
+                        bitmapFont.Pages = bitmapFont.Pages ?? new Dictionary<int, string>();
                         var id = TextFormatUtility.ReadInt("id", lineSegments);
                         var file = TextFormatUtility.ReadString("file", lineSegments);
                         bitmapFont.Pages[id] = file;

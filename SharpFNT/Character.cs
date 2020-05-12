@@ -91,19 +91,19 @@ namespace SharpFNT
         }
         public static Character ReadXML(XElement element, out int id)
         {
-            id = (int) element.Attribute("id");
+            id = (int?)element.Attribute("id") ?? 0;
 
             return new Character
             {
-                X = (int)element.Attribute("x"),
-                Y = (int)element.Attribute("y"),
-                Width = (int)element.Attribute("width"),
-                Height = (int)element.Attribute("height"),
-                XOffset = (int)element.Attribute("xoffset"),
-                YOffset = (int)element.Attribute("yoffset"),
-                XAdvance = (int)element.Attribute("xadvance"),
-                Page = (int)element.Attribute("page"),
-                Channel = element.Attribute("chnl").GetEnumValue<Channel>()
+                X = (int?)element.Attribute("x") ?? 0,
+                Y = (int?)element.Attribute("y") ?? 0,
+                Width = (int?)element.Attribute("width") ?? 0,
+                Height = (int?)element.Attribute("height") ?? 0,
+                XOffset = (int?)element.Attribute("xoffset") ?? 0,
+                YOffset = (int?)element.Attribute("yoffset") ?? 0,
+                XAdvance = (int?)element.Attribute("xadvance") ?? 0,
+                Page = (int?)element.Attribute("page") ?? 0,
+                Channel = element.Attribute("chnl")?.GetEnumValue<Channel>() ?? Channel.None
             };
         }
         public static Character ReadText(IReadOnlyList<string> lineSegments, out int id)

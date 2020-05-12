@@ -8,16 +8,18 @@
     <Company></Company>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>SharpFNT is a C# library for reading and writing Angel Code bitmap fonts in binary, XML, and text.</Description>
-    <Version>1.1.2</Version>
+    <Version>2.0.0</Version>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/AuroraBertaOldham/SharpFNT</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AuroraBertaOldham/SharpFNT</RepositoryUrl>
     <Copyright>Copyright © Aurora Berta-Oldham 2018-2020</Copyright>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Fixed a bug when writing info block size for the binary format. Thanks to Michael Belyaev (@usr-sse2) for the contribution.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Missing properties are now set to default values instead of throwing an exception in the XML and text formats. This improves compatibility with alternative bitmap font generation programs that leave out some properties. This could be a breaking change in certain circumstances.
+- Changed initial list capacity when properties such as count, or page are missing from 32 to 0.
+- The words "true" and "false" are now valid for Boolean properties in the text format.</PackageReleaseNotes>
     <PackageTags>fnt;bitmap;font;bmfont</PackageTags>
-    <AssemblyVersion>1.1.2.0</AssemblyVersion>
-    <FileVersion>1.1.2.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 

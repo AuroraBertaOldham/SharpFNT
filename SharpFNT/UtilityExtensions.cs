@@ -63,7 +63,7 @@ namespace SharpFNT
             binaryWriter.Write((byte)0);
         }
 
-        public static T GetEnumValue<T>(this XAttribute xAttribute) 
+        public static T GetEnumValue<T>(this XAttribute xAttribute) where T : Enum
         {
             return (T)Enum.Parse(typeof(T), xAttribute.Value);
         }

@@ -84,9 +84,9 @@ namespace SharpFNT
         }
         public static KerningPair ReadXML(XElement element, out int amount)
         {
-            var first = (int)element.Attribute("first");
-            var second = (int)element.Attribute("second"); 
-            amount = (int)element.Attribute("amount");
+            var first = (int?)element.Attribute("first") ?? 0;
+            var second = (int?)element.Attribute("second") ?? 0; 
+            amount = (int?)element.Attribute("amount") ?? 0;
 
             return new KerningPair(first, second); 
         }

@@ -112,19 +112,19 @@ namespace SharpFNT
         {
             var bitmapFontCommon = new BitmapFontCommon();
 
-            bitmapFontCommon.LineHeight = (int)element.Attribute("lineHeight");
-            bitmapFontCommon.Base = (int)element.Attribute("base");
-            bitmapFontCommon.ScaleWidth = (int)element.Attribute("scaleW");
-            bitmapFontCommon.ScaleHeight = (int)element.Attribute("scaleH");
+            bitmapFontCommon.LineHeight = (int?)element.Attribute("lineHeight") ?? 0;
+            bitmapFontCommon.Base = (int?)element.Attribute("base") ?? 0;
+            bitmapFontCommon.ScaleWidth = (int?)element.Attribute("scaleW") ?? 0;
+            bitmapFontCommon.ScaleHeight = (int?)element.Attribute("scaleH") ?? 0;
 
-            pages = (int)element.Attribute("pages");
+            pages = (int?)element.Attribute("pages") ?? 0;
 
-            bitmapFontCommon.Packed = (bool)element.Attribute("packed");
+            bitmapFontCommon.Packed = (bool?)element.Attribute("packed") ?? false;
             
-            bitmapFontCommon.AlphaChannel = element.Attribute("alphaChnl").GetEnumValue<ChannelData>();
-            bitmapFontCommon.RedChannel = element.Attribute("redChnl").GetEnumValue<ChannelData>();
-            bitmapFontCommon.GreenChannel = element.Attribute("greenChnl").GetEnumValue<ChannelData>();
-            bitmapFontCommon.BlueChannel = element.Attribute("blueChnl").GetEnumValue<ChannelData>();
+            bitmapFontCommon.AlphaChannel = element.Attribute("alphaChnl")?.GetEnumValue<ChannelData>() ?? ChannelData.Glyph;
+            bitmapFontCommon.RedChannel = element.Attribute("redChnl")?.GetEnumValue<ChannelData>() ?? ChannelData.Glyph;
+            bitmapFontCommon.GreenChannel = element.Attribute("greenChnl")?.GetEnumValue<ChannelData>() ?? ChannelData.Glyph;
+            bitmapFontCommon.BlueChannel = element.Attribute("blueChnl")?.GetEnumValue<ChannelData>() ?? ChannelData.Glyph;
 
             return bitmapFontCommon;
         }

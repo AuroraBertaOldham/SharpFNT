@@ -7,6 +7,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace SharpFNT.Tests
@@ -15,7 +16,6 @@ namespace SharpFNT.Tests
     public class TextFormatUtilityTests
     {
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public void ReadInvalidValue()
         {
             var segments = new List<string>
@@ -23,7 +23,7 @@ namespace SharpFNT.Tests
                 "This is not a valid property.", "This is also not a valid property."
             };
 
-            TextFormatUtility.ReadValue("Test", segments);
+            Assert.AreEqual(null, TextFormatUtility.ReadValue("Test", segments));
         }
 
         [TestMethod]
@@ -32,10 +32,17 @@ namespace SharpFNT.Tests
         {
             var segments = new List<string>
             {
-                "test=2"
+                "Test=2"
             };
 
-            TextFormatUtility.ReadBool("test", segments);
+            TextFormatUtility.ReadBool("Test", segments);
+        }
+
+        [TestMethod]
+        public void ReadMissingBool()
+        {
+            var segments = new List<string>();
+            Assert.AreEqual(false, TextFormatUtility.ReadBool("Test", segments));
         }
     }
 }

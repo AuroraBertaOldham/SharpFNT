@@ -61,37 +61,38 @@ namespace SharpFNT
                 }
             }
 
-            throw new InvalidDataException("Invalid property name.");
+            return null;
         }
-        public static bool ReadBool(string propertyName, IReadOnlyList<string> segments) 
+        public static bool ReadBool(string propertyName, IReadOnlyList<string> segments, bool missingValue = false) 
         {
             var value = ReadValue(propertyName, segments);
 
-            if (value == "1") 
+            switch (value)
             {
-                return true;
+                case null:
+                    return missingValue;
+                case "1":
+                    return true;
+                case "0":
+                    return false;
+                default:
+                    // True and false aren't valid but might as well try to use them anyway.
+                    return Convert.ToBoolean(value);
             }
-
-            if (value == "0") 
-            {
-                return false;
-            }
-
-            throw new FormatException("Invalid boolean format. True should use 1 and false should use 0.");
         }
-        public static int ReadInt(string propertyName, IReadOnlyList<string> segments) 
+        public static int ReadInt(string propertyName, IReadOnlyList<string> segments, int missingValue = 0) 
         {
             var value = ReadValue(propertyName, segments);
-            return int.Parse(value);
+            return value != null ? int.Parse(value) : missingValue;
         }
-        public static string ReadString(string propertyName, IReadOnlyList<string> segments)
+        public static string ReadString(string propertyName, IReadOnlyList<string> segments, string missingValue = null)
         {
-            return ReadValue(propertyName, segments);
+            return ReadValue(propertyName, segments) ?? missingValue;
         }
-        public static T ReadEnum<T>(string propertyName, IReadOnlyList<string> segments) 
+        public static T ReadEnum<T>(string propertyName, IReadOnlyList<string> segments, T missingValue = default) where T : Enum
         {
-            var value = ReadInt(propertyName, segments);
-            return (T)Enum.ToObject(typeof(T), value);
+            var value = ReadValue(propertyName, segments);
+            return value != null ? (T)Enum.ToObject(typeof(T), int.Parse(value)) : missingValue;
         }
 
         public static void WriteValue(string propertyName, string value, TextWriter textWriter)

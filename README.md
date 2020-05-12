@@ -23,5 +23,8 @@ See the [documentation for BMFont](http://www.angelcode.com/products/bmfont/docu
 ## Download
 SharpFNT can be downloaded on [NuGet](https://www.nuget.org/packages/SharpFNT/) or from the releases section.
 
+## Changelog
+Available [here](CHANGELOG.md).
+
 ## License
 Licensed under [MIT](LICENSE).
