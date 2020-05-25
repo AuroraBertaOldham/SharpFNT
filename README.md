@@ -1,7 +1,7 @@
 # SharpFNT
 
 ## Introduction
-SharpFNT is a C# library for reading and writing [Angel Code bitmap fonts](http://www.angelcode.com/products/bmfont/) in binary, XML, and text. It is built for .NET Standard 1.3 or higher. It was written for my upcoming game called [Everchanging](https://www.beacongames.com). 
+SharpFNT is a C# library for reading and writing [AngelCode bitmap fonts (.fnt)](http://www.angelcode.com/products/bmfont/) in binary, XML, and text. It is built for .NET Standard 1.3 or higher. I have a command line application for converting and inspecting AngelCode bitmap fonts available [here](https://github.com/AuroraBertaOldham/FNTTools).
 
 ## Example
 The following loads a bitmap font from a file, outputs the name of the font, changes the font name, and then saves it as a new binary bitmap font.
