@@ -16,5 +16,5 @@ If applicable, a clear and concise description of any alternative solutions you'
 **Mock-up**
 If applicable, consider adding a picture to help explain your request.
 
-**Additional context**
+**Additional Context**
 Add any other context about the feature request here.
